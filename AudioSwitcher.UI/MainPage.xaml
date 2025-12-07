@@ -88,6 +88,7 @@
             <ListView x:Name="DeviceList" Grid.Row="1" ItemsSource="{x:Bind ViewModel.Devices}" 
                       ItemTemplate="{StaticResource DeviceTemplate}"
                       SelectionMode="Single"
+                      SelectedItem="{x:Bind ViewModel.DefaultDevice, Mode=OneWay}"
                       Padding="4"
                       SelectionChanged="DeviceList_SelectionChanged">
             </ListView>

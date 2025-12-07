@@ -13,6 +13,25 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <local:MainPage />
+    <Grid x:Name="RootGrid">
+        <!-- Tray Icon Context Menu -->
+        <Grid.ContextFlyout>
+            <MenuFlyout x:Name="TrayContextMenu">
+                <MenuFlyoutItem x:Name="SettingsMenuItem" Text="Settings" Click="OnSettingsClick">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE713;" FontFamily="Segoe Fluent Icons"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem x:Name="ExitMenuItem" Text="Exit" Click="OnExitClick">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE7E8;" FontFamily="Segoe Fluent Icons"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuFlyout>
+        </Grid.ContextFlyout>
+        
+        <local:MainPage x:Name="FlyoutPage"/>
+    </Grid>
 
 </Window>
