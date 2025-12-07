@@ -1,0 +1,8 @@
+.vs
+/log
+AudioSwitcher.UI/obj/*
+AudioSwitcher.UI/bin/*
+AudioSwitcher.Core/obj/*
+AudioSwitcher.Core/bin/*
+
+
