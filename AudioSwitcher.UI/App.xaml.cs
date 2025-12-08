@@ -11,10 +11,10 @@ namespace AudioSwitcher.UI
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            Window = new MainWindow();
+            Window = new FlyoutWindow();
             Window.Activate();
         }
 
-        public MainWindow? Window { get; private set; }
+        public FlyoutWindow? Window { get; private set; }
     }
 }

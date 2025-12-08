@@ -3,13 +3,13 @@ using Microsoft.UI.Xaml.Controls;
 using AudioSwitcher.UI.ViewModels;
 using AudioSwitcher.Core.Models;
 
-namespace AudioSwitcher.UI
+namespace AudioSwitcher.UI.Views
 {
-    public sealed partial class MainPage : Page
+    public sealed partial class FlyoutPage : Page
     {
         public MainViewModel ViewModel { get; }
 
-        public MainPage()
+        public FlyoutPage()
         {
             this.InitializeComponent();
             ViewModel = new MainViewModel();
@@ -37,13 +37,13 @@ namespace AudioSwitcher.UI
         {
             System.Diagnostics.Trace.WriteLine($"MainPage.UpdateTrayIcon: iconPath='{iconPath}', tooltip='{tooltip}'");
             
-            if (Microsoft.UI.Xaml.Application.Current is App app && app.Window is MainWindow mainWindow)
+            if (Microsoft.UI.Xaml.Application.Current is App app && app.Window is FlyoutWindow flyoutWindow)
             {
-                System.Diagnostics.Trace.WriteLine($"MainPage.UpdateTrayIcon: TrayIcon is {(mainWindow.TrayIcon != null ? "not null" : "NULL")}");
+                System.Diagnostics.Trace.WriteLine($"FlyoutPage.UpdateTrayIcon: TrayManager is {(flyoutWindow.TrayManager != null ? "not null" : "NULL")}");
                 
                 // Convert icon path to Fluent glyph (same logic as DeviceIconConverter)
                 string glyph = GetFluentGlyphForIconPath(iconPath);
-                mainWindow.TrayIcon?.UpdateIconFromFluentGlyph(glyph, tooltip);
+                flyoutWindow.UpdateIconFromFluentGlyph(glyph, tooltip);
             }
             else
             {
