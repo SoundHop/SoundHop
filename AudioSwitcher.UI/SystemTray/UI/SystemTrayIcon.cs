@@ -19,6 +19,7 @@ namespace AudioSwitcher.UI.SystemTray.UI
     public class SystemTrayIcon : IDisposable
     {
         private const int WM_LBUTTONUP = 0x0202;
+        private const int WM_MBUTTONUP = 0x0208;
         private const int WM_RBUTTONUP = 0x0205;
         private const int WM_CONTEXTMENU = 0x007B;
 
@@ -76,6 +77,7 @@ namespace AudioSwitcher.UI.SystemTray.UI
         public SystemTrayContextMenu ContextMenu { get; }
 
         public event EventHandler<SystemTrayEventArgs>? LeftClick;
+        public event EventHandler<SystemTrayEventArgs>? MiddleClick;
         public event EventHandler<SystemTrayEventArgs>? RightClick;
 
         public void Show()
@@ -119,6 +121,7 @@ namespace AudioSwitcher.UI.SystemTray.UI
         }
 
         private void OnLeftClick(SystemTrayEventArgs e) => LeftClick?.Invoke(this, e);
+        private void OnMiddleClick(SystemTrayEventArgs e) => MiddleClick?.Invoke(this, e);
         private void OnRightClick(SystemTrayEventArgs e) => RightClick?.Invoke(this, e);
 
         private void Dispose(bool disposing)
@@ -149,6 +152,10 @@ namespace AudioSwitcher.UI.SystemTray.UI
             {
                 case WM_LBUTTONUP:
                     OnLeftClick(new SystemTrayEventArgs { Rect = GetIconRectangle() });
+                    break;
+
+                case WM_MBUTTONUP:
+                    OnMiddleClick(new SystemTrayEventArgs { Rect = GetIconRectangle() });
                     break;
 
                 case WM_CONTEXTMENU:

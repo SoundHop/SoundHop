@@ -2,6 +2,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Windowing;
 using AudioSwitcher.Core.Interop;
 using AudioSwitcher.UI.Services;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
 
 namespace AudioSwitcher.UI
 {
@@ -12,14 +14,23 @@ namespace AudioSwitcher.UI
             this.InitializeComponent();
             this.Title = "Audio Switcher Dashboard";
             
+            // Apply Mica backdrop
+            this.SystemBackdrop = new MicaBackdrop();
+            
             // Standard window setup
             var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             var wndId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
             var appWindow = AppWindow.GetFromWindowId(wndId);
             
+            // Extend content into title bar for full Mica effect
             if (AppWindowTitleBar.IsCustomizationSupported())
             {
-               // Standard title bar for now
+                var titleBar = appWindow.TitleBar;
+                titleBar.ExtendsContentIntoTitleBar = true;
+                titleBar.ButtonBackgroundColor = Colors.Transparent;
+                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                titleBar.ButtonHoverBackgroundColor = Colors.Transparent;
+                titleBar.ButtonPressedBackgroundColor = Colors.Transparent;
             }
             
             appWindow.Resize(new Windows.Graphics.SizeInt32(1000, 700));
@@ -55,6 +66,14 @@ namespace AudioSwitcher.UI
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Navigates to the Settings page within the dashboard.
+        /// </summary>
+        public void NavigateToSettings()
+        {
+            ShellPage.NavigateToSettings();
         }
     }
 }

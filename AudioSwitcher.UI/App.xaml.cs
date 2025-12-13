@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using AudioSwitcher.UI.Services;
 
 namespace AudioSwitcher.UI
 {
@@ -12,7 +13,17 @@ namespace AudioSwitcher.UI
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             Window = new FlyoutWindow();
-            Window.Activate();
+            
+            if (SettingsService.Instance.StartMinimized)
+            {
+                // Activate briefly then hide - needed for tray icon to work
+                Window.Activate();
+                Window.Hide();
+            }
+            else
+            {
+                Window.Activate();
+            }
         }
 
         public FlyoutWindow? Window { get; private set; }

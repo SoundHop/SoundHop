@@ -1,0 +1,176 @@
+<UserControl
+    x:Class="AudioSwitcher.UI.Controls.DeviceListControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:AudioSwitcher.UI.Converters"
+    xmlns:models="using:AudioSwitcher.Core.Models"
+    xmlns:controls="using:AudioSwitcher.UI.Controls"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:DeviceIconConverter x:Key="DeviceIconConverter"/>
+        <converters:FavoriteIconConverter x:Key="FavoriteIconConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:DeviceOpacityConverter x:Key="DeviceOpacityConverter"/>
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        <converters:BoolToOpacityHiddenConverter x:Key="BoolToOpacityHiddenConverter"/>
+        
+        <Style x:Key="FavoriteButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter x:Name="ContentPresenter"
+                                          Background="Transparent"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Padding="{TemplateBinding Padding}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StatusBadgeStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        
+        <!-- Shared item template -->
+        <DataTemplate x:Key="DeviceItemTemplate" x:DataType="models:AudioDevice">
+            <Grid Padding="6" Background="Transparent" 
+                  Opacity="{x:Bind IsActive, Converter={StaticResource DeviceOpacityConverter}, Mode=OneWay}"
+                  PointerEntered="DeviceItem_PointerEntered"
+                  PointerExited="DeviceItem_PointerExited">
+                <Grid.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Set as default communication device" Click="SetDefaultCommunication_Click" Tag="{x:Bind}"
+                                        IsEnabled="{x:Bind IsActive}">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE720;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem Text="Disable device" Click="DisableDevice_Click" Tag="{x:Bind}"
+                                        Visibility="{x:Bind IsActive, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE8D8;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Enable device" Click="EnableDevice_Click" Tag="{x:Bind}"
+                                        Visibility="{x:Bind IsDisabled, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE73E;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem Text="Set hotkey" Click="SetHotkey_Click" Tag="{x:Bind}">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE765;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Change icon" Click="ChangeIcon_Click" Tag="{x:Bind}">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE790;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </Grid.ContextFlyout>
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <FontIcon Grid.Column="0" Glyph="{x:Bind DisplayIcon, Mode=OneWay}" 
+                          FontFamily="Segoe Fluent Icons" FontSize="20" Margin="0,0,16,0" 
+                          VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{x:Bind DisplayName}" Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <FontIcon Glyph="&#xE720;" FontFamily="Segoe Fluent Icons" FontSize="12" 
+                                  Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                                  VerticalAlignment="Center"
+                                  ToolTipService.ToolTip="Default Communication Device"
+                                  Visibility="{x:Bind IsDefaultComms, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
+                        <controls:HotkeyControl Hotkey="{x:Bind HotKey, Mode=OneWay}" VerticalAlignment="Center"/>
+                        
+                        <!-- Disconnected Badge -->
+                        <Border Style="{StaticResource StatusBadgeStyle}" 
+                                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                                Visibility="{x:Bind IsDisconnected, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock Text="Disconnected" FontSize="10" 
+                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                        </Border>
+                        
+                        <!-- Disabled Badge -->
+                        <Border Style="{StaticResource StatusBadgeStyle}" 
+                                Background="#33FF6B6B"
+                                Visibility="{x:Bind IsDisabled, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <TextBlock Text="Disabled" FontSize="10" Foreground="#FFFF6B6B"/>
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Text="{x:Bind DisplaySubName}" 
+                               Style="{ThemeResource CaptionTextBlockStyle}" 
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                               Visibility="{x:Bind HasSubName, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                </StackPanel>
+
+                <Button x:Name="FavoriteButton" Grid.Column="2" Click="ToggleFavorite_Click" Tag="{x:Bind}" 
+                        Style="{StaticResource FavoriteButtonStyle}" 
+                        ToolTipService.ToolTip="Pin to Favorites" Margin="0,0,8,0"
+                        PointerEntered="FavoriteButton_PointerEntered"
+                        PointerExited="FavoriteButton_PointerExited"
+                        Opacity="{x:Bind IsFavorite, Converter={StaticResource BoolToOpacityHiddenConverter}, Mode=OneWay}">
+                    <Grid>
+                        <FontIcon x:Name="FavoriteIconNormal"
+                                  Glyph="{x:Bind IsFavorite, Converter={StaticResource FavoriteIconConverter}, Mode=OneWay}" 
+                                  FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                        <FontIcon x:Name="FavoriteIconHover" Visibility="Collapsed"
+                                  Glyph="&#xE735;" 
+                                  FontFamily="Segoe Fluent Icons" FontSize="16"/>
+                    </Grid>
+                </Button>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <!-- Favorites section -->
+            <ListView x:Name="FavoritesList" 
+                      SelectionMode="Single"
+                      IsItemClickEnabled="True"
+                      ItemClick="DeviceList_ItemClick"
+                      ItemTemplate="{StaticResource DeviceItemTemplate}"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollMode="Disabled"/>
+            
+            <!-- Separator between favorites and non-favorites -->
+            <Border x:Name="FavoritesDivider" 
+                    Height="1" 
+                    Background="{ThemeResource SystemControlForegroundBaseLowBrush}" 
+                    Margin="0,4,0,4"/>
+            
+            <!-- Non-favorites section -->
+            <ListView x:Name="NonFavoritesList" 
+                      SelectionMode="Single"
+                      IsItemClickEnabled="True"
+                      ItemClick="DeviceList_ItemClick"
+                      ItemTemplate="{StaticResource DeviceItemTemplate}"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollMode="Disabled"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -4,29 +4,177 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d"
+    Background="Transparent">
 
-    <Grid Padding="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="4">
+            <TextBlock Text="Settings" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,0,0,16"/>
 
-        <TextBlock Text="Settings" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,0,0,24"/>
-
-        <StackPanel Grid.Row="1" Spacing="20" MaxWidth="600" HorizontalAlignment="Left">
+            <!-- Startup Section -->
+            <TextBlock Text="Startup" Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="0,0,0,8"/>
             
-            <StackPanel Spacing="10">
-                <TextBlock Text="General" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                <ToggleSwitch x:Name="RunAtStartupToggle" Header="Run at Startup" Toggled="RunAtStartupToggle_Toggled"/>
-            </StackPanel>
+            <controls:SettingsCard Description="Start Audio Switcher when Windows starts">
+                <controls:SettingsCard.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE7B5;" FontSize="16"/>
+                        <TextBlock Text="Launch on startup"/>
+                    </StackPanel>
+                </controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(RunAtStartupToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="RunAtStartupToggle" Toggled="RunAtStartupToggle_Toggled" 
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Description="Start in system tray instead of showing the window">
+                <controls:SettingsCard.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE712;" FontSize="16"/>
+                        <TextBlock Text="Start minimized"/>
+                    </StackPanel>
+                </controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(StartMinimizedToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="StartMinimizedToggle" Toggled="StartMinimizedToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
 
-            <StackPanel Spacing="10">
-                <TextBlock Text="System Tray" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                <ToggleSwitch x:Name="ShowTrayIconToggle" Header="Show System Tray Icon" IsOn="True" Toggled="ShowTrayIconToggle_Toggled"/>
-                <ToggleSwitch x:Name="MinimizeToTrayToggle" Header="Minimize to System Tray" IsOn="False" Toggled="MinimizeToTrayToggle_Toggled"/>
-                <ToggleSwitch x:Name="CloseToTrayToggle" Header="Close Button Minimizes to System Tray" IsOn="True" Toggled="CloseToTrayToggle_Toggled"/>
-            </StackPanel>
+            <!-- System Tray Section -->
+            <TextBlock Text="System Tray" Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="0,24,0,8"/>
+            
+            <controls:SettingsCard Description="Show Audio Switcher icon in system tray">
+                <controls:SettingsCard.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE7F4;" FontSize="16"/>
+                        <TextBlock Text="Show tray icon"/>
+                    </StackPanel>
+                </controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(ShowTrayIconToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="ShowTrayIconToggle" Toggled="ShowTrayIconToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Description="Hide window to tray when minimizing">
+                <controls:SettingsCard.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE921;" FontSize="16"/>
+                        <TextBlock Text="Minimize to tray"/>
+                    </StackPanel>
+                </controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(MinimizeToTrayToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="MinimizeToTrayToggle" Toggled="MinimizeToTrayToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Description="Clicking close button hides to tray instead of exiting">
+                <controls:SettingsCard.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE8BB;" FontSize="16"/>
+                        <TextBlock Text="Close to tray"/>
+                    </StackPanel>
+                </controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(CloseToTrayToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="CloseToTrayToggle" Toggled="CloseToTrayToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+
+            <!-- Device Switching Section -->
+            <TextBlock Text="Device Switching" Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="0,24,0,8"/>
+            
+            <controls:SettingsCard Description="Middle-click tray icon to cycle through favorite devices">
+                <controls:SettingsCard.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE8AB;" FontSize="16"/>
+                        <TextBlock Text="Quick switch mode"/>
+                    </StackPanel>
+                </controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(QuickSwitchToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="QuickSwitchToggle" Toggled="QuickSwitchToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Description="When changing default device, also change communication device">
+                <controls:SettingsCard.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE8EA;" FontSize="16"/>
+                        <TextBlock Text="Sync communication device"/>
+                    </StackPanel>
+                </controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(SyncCommunicationToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="SyncCommunicationToggle" Toggled="SyncCommunicationToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+
+            <!-- Device Display Section -->
+            <TextBlock Text="Device Display" Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="0,24,0,8"/>
+            
+            <controls:SettingsCard Description="Display devices that have been disabled">
+                <controls:SettingsCard.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE8D8;" FontSize="16"/>
+                        <TextBlock Text="Show disabled devices"/>
+                    </StackPanel>
+                </controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(ShowDisabledToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="ShowDisabledToggle" Toggled="ShowDisabledToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Description="Display devices that are currently unplugged">
+                <controls:SettingsCard.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xEB5E;" FontSize="16"/>
+                        <TextBlock Text="Show disconnected devices"/>
+                    </StackPanel>
+                </controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(ShowDisconnectedToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="ShowDisconnectedToggle" Toggled="ShowDisconnectedToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
         </StackPanel>
-    </Grid>
+    </ScrollViewer>
 </Page>

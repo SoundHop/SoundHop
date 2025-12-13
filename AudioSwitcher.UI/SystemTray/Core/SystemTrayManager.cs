@@ -28,6 +28,7 @@ namespace AudioSwitcher.UI.SystemTray.Core
         private SystemTrayContextMenuWindow? contextMenuWindow;
         private SystemTrayContextMenuWindow.Item[] menuItems = [];
         public Action? OpenSettingsAction { get; set; }
+        public Action? OpenDashboardAction { get; set; }
         public record LangPair(string Primary, string Secondary);
 
         private static readonly string[] RtlLanguages =
@@ -180,10 +181,45 @@ namespace AudioSwitcher.UI.SystemTray.Core
 
             menuItems =
             [
-                new SystemTrayContextMenuWindow.Item(texts[0], new Command(OpenSettings)),
+                new SystemTrayContextMenuWindow.Item("Open dashboard", new Command(OpenDashboard), "\uE80F"),   // Open pane
+                new SystemTrayContextMenuWindow.Item(texts[0], new Command(OpenSettings), "\uE713"),            // Settings gear
                 new SystemTrayContextMenuWindow.Item("--", null),
-                new SystemTrayContextMenuWindow.Item(texts[1], new Command(() => Application.Current.Exit()))
+                new SystemTrayContextMenuWindow.Item("Sound control panel", new Command(OpenSoundControlPanel), "\uE7F5"),  // Speaker
+                new SystemTrayContextMenuWindow.Item("Sound settings", new Command(OpenSoundSettings), "\uE8B5"),           // Audio
+                new SystemTrayContextMenuWindow.Item("--", null),
+                new SystemTrayContextMenuWindow.Item(texts[1], new Command(() => Application.Current.Exit()), "\uE8BB")     // Exit door
             ];
+        }
+
+        private void OpenDashboard()
+        {
+            OpenDashboardAction?.Invoke();
+        }
+
+        private static void OpenSoundControlPanel()
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "mmsys.cpl",
+                    UseShellExecute = true
+                });
+            }
+            catch { }
+        }
+
+        private static void OpenSoundSettings()
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "ms-settings:sound",
+                    UseShellExecute = true
+                });
+            }
+            catch { }
         }
 
         private static string[] GetMenuTexts(string langCode)

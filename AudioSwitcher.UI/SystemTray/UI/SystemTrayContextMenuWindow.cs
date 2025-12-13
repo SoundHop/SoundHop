@@ -150,28 +150,63 @@ namespace AudioSwitcher.UI.SystemTray.UI
             }
         }
 
-        private MenuFlyoutItemBase CreateMenuItem(Item menuItem)
+        private FrameworkElement CreateMenuItem(Item menuItem)
         {
             if (menuItem.Text == "--")
             {
-                var separator = new MenuFlyoutSeparator();
-                separator.IsTabStop = false;
-                return separator;
+                return new Border
+                {
+                    Height = 1,
+                    Background = (Brush)Application.Current.Resources["SystemControlForegroundBaseLowBrush"],
+                    Margin = new Thickness(0, 4, 0, 4)
+                };
             }
             else
             {
-                var flyoutMenuItem = new MenuFlyoutItem
+                var content = new StackPanel
                 {
-                    Padding = new Thickness(12, 6, 12, 6),
-                    DataContext = menuItem,
+                    Orientation = Orientation.Horizontal,
+                    Spacing = 12
+                };
+
+                // Add icon if specified
+                if (!string.IsNullOrEmpty(menuItem.IconGlyph))
+                {
+                    content.Children.Add(new FontIcon
+                    {
+                        Glyph = menuItem.IconGlyph,
+                        FontFamily = new FontFamily("Segoe Fluent Icons"),
+                        FontSize = 14
+                    });
+                }
+                else
+                {
+                    // Add spacer for alignment when no icon
+                    content.Children.Add(new Border { Width = 14 });
+                }
+
+                content.Children.Add(new TextBlock
+                {
                     Text = menuItem.Text,
+                    VerticalAlignment = VerticalAlignment.Center
+                });
+
+                var button = new Button
+                {
+                    Content = content,
+                    Padding = new Thickness(12, 8, 12, 8),
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                    Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent),
+                    BorderThickness = new Thickness(0),
+                    DataContext = menuItem,
                     Command = menuItem.Command
                 };
 
-                flyoutMenuItem.PreviewKeyDown += OnPreviewKeyDown;
-                flyoutMenuItem.Click += OnItemClick;
+                button.PreviewKeyDown += OnPreviewKeyDown;
+                button.Click += OnItemClick;
 
-                return flyoutMenuItem;
+                return button;
             }
         }
 
@@ -194,7 +229,7 @@ namespace AudioSwitcher.UI.SystemTray.UI
             while (index + direction >= 0 && index + direction < itemsControl.Items.Count)
             {
                 index += direction;
-                if (itemsControl.Items[index] is MenuFlyoutItem item && item.Visibility == Visibility.Visible)
+                if (itemsControl.Items[index] is Button item && item.Visibility == Visibility.Visible)
                 {
                     item.Focus(FocusState.Programmatic);
                     return;
@@ -209,7 +244,7 @@ namespace AudioSwitcher.UI.SystemTray.UI
 
             MenuClosed?.Invoke(this, EventArgs.Empty); 
 
-            if (sender is MenuFlyoutItem x && x.DataContext is Item menuItem)
+            if (sender is Button btn && btn.DataContext is Item menuItem)
             {
                 menuItem.Command?.Execute(null);
             }
@@ -254,7 +289,7 @@ namespace AudioSwitcher.UI.SystemTray.UI
             }
         }
 
-        public sealed record Item(string Text, ICommand? Command);
+        public sealed record Item(string Text, ICommand? Command, string? IconGlyph = null);
 
         static unsafe Rect GetPrimaryWorkArea()
         {

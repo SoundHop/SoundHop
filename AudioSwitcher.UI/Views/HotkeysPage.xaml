@@ -4,7 +4,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:AudioSwitcher.Core.Models"
+    xmlns:controls="using:AudioSwitcher.UI.Controls"
+    xmlns:converters="using:AudioSwitcher.UI.Converters"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        
+        <Style x:Key="StatusBadgeStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Page.Resources>
 
     <Grid Padding="24">
         <Grid.RowDefinitions>
@@ -12,8 +27,54 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Hotkeys" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,0,0,24"/>
+        <Grid Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Hotkeys" Style="{ThemeResource TitleTextBlockStyle}"/>
+            <Button Grid.Column="1" Content="Add hotkey" Click="AddHotkey_Click" Style="{ThemeResource AccentButtonStyle}"/>
+        </Grid>
 
-        <TextBlock Grid.Row="1" Text="Hotkey configuration coming soon..." Style="{ThemeResource BodyTextBlockStyle}"/>
+        <ListView Grid.Row="1" ItemsSource="{x:Bind ViewModel.AllHotkeyDisplayInfos, Mode=OneWay}" SelectionMode="None">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:HotkeyDisplayInfo">
+                    <Grid Padding="12" Opacity="{x:Bind IsConnected, Converter={StaticResource BoolToOpacityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <controls:HotkeyControl Hotkey="{x:Bind Hotkey, Mode=OneWay}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="{x:Bind DisplayName}" Style="{ThemeResource BodyTextBlockStyle}"/>
+                                
+                                <!-- Disconnected Badge (same style as DeviceListControl) -->
+                                <Border Style="{StaticResource StatusBadgeStyle}" 
+                                        Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                                        Visibility="{x:Bind IsConnected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <TextBlock Text="Disconnected" FontSize="10" 
+                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                </Border>
+                            </StackPanel>
+                            
+                            <!-- Sub name (second line) -->
+                            <TextBlock Text="{x:Bind SubName}" 
+                                       Style="{ThemeResource CaptionTextBlockStyle}" 
+                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                       Visibility="{x:Bind HasSubName, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                            <Button Content="Edit" Click="Edit_Click" Tag="{x:Bind}"/>
+                            <Button Content="Delete" Click="Delete_Click" Tag="{x:Bind}"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

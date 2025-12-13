@@ -11,21 +11,14 @@ namespace AudioSwitcher.UI.Services
         private static SettingsService? _instance;
         public static SettingsService Instance => _instance ??= new SettingsService();
 
-        private readonly string _settingsFilePath;
-        private Dictionary<string, object> _settings;
-        
         private const string RunKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
         private const string AppName = "AudioSwitcher";
+        private readonly AudioSwitcher.Core.Services.SettingsService _coreSettings = AudioSwitcher.Core.Services.SettingsService.Instance;
 
         public event EventHandler<string>? SettingChanged;
 
         private SettingsService()
         {
-            var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var appFolder = Path.Combine(appData, "AudioSwitcher");
-            Directory.CreateDirectory(appFolder);
-            _settingsFilePath = Path.Combine(appFolder, "settings.json");
-            _settings = LoadSettings();
         }
 
         public bool RunAtStartup
@@ -40,82 +33,100 @@ namespace AudioSwitcher.UI.Services
 
         public bool ShowTrayIcon
         {
-            get => GetValue(nameof(ShowTrayIcon), true);
+            get => _coreSettings.Settings.ShowTrayIcon;
             set
             {
-                SetValue(nameof(ShowTrayIcon), value);
+                _coreSettings.Settings.ShowTrayIcon = value;
+                _coreSettings.Save();
                 SettingChanged?.Invoke(this, nameof(ShowTrayIcon));
             }
         }
 
         public bool MinimizeToTray
         {
-            get => GetValue(nameof(MinimizeToTray), false);
+            get => _coreSettings.Settings.MinimizeToTray;
             set
             {
-                SetValue(nameof(MinimizeToTray), value);
+                _coreSettings.Settings.MinimizeToTray = value;
+                _coreSettings.Save();
                 SettingChanged?.Invoke(this, nameof(MinimizeToTray));
             }
         }
 
         public bool CloseToTray
         {
-            get => GetValue(nameof(CloseToTray), true);
+            get => _coreSettings.Settings.CloseToTray;
             set
             {
-                SetValue(nameof(CloseToTray), value);
+                _coreSettings.Settings.CloseToTray = value;
+                _coreSettings.Save();
                 SettingChanged?.Invoke(this, nameof(CloseToTray));
             }
         }
+
+        public bool StartMinimized
+        {
+            get => _coreSettings.Settings.StartMinimized;
+            set
+            {
+                _coreSettings.Settings.StartMinimized = value;
+                _coreSettings.Save();
+                SettingChanged?.Invoke(this, nameof(StartMinimized));
+            }
+        }
         
-        private T GetValue<T>(string key, T defaultValue)
+        public Dictionary<string, AudioSwitcher.Core.Models.Hotkey> Hotkeys
         {
-            if (_settings.TryGetValue(key, out var value))
+            get => _coreSettings.Settings.Hotkeys;
+            set
             {
-                if (value is JsonElement element)
-                {
-                    if (typeof(T) == typeof(bool)) return (T)(object)element.GetBoolean();
-                    if (typeof(T) == typeof(string)) return (T)(object)element.GetString()!;
-                    if (typeof(T) == typeof(int)) return (T)(object)element.GetInt32();
-                }
-                return (T)value;
+                _coreSettings.Settings.Hotkeys = value;
+                _coreSettings.Save();
+                SettingChanged?.Invoke(this, nameof(Hotkeys));
             }
-            return defaultValue;
         }
 
-        private void SetValue<T>(string key, T value)
+        public bool QuickSwitchMode
         {
-            _settings[key] = value!;
-            SaveSettings();
+            get => _coreSettings.Settings.QuickSwitchMode;
+            set
+            {
+                _coreSettings.Settings.QuickSwitchMode = value;
+                _coreSettings.Save();
+                SettingChanged?.Invoke(this, nameof(QuickSwitchMode));
+            }
         }
 
-        private Dictionary<string, object> LoadSettings()
+        public bool SyncCommunicationDevice
         {
-            try
+            get => _coreSettings.Settings.SyncCommunicationDevice;
+            set
             {
-                if (File.Exists(_settingsFilePath))
-                {
-                    var json = File.ReadAllText(_settingsFilePath);
-                    return JsonSerializer.Deserialize<Dictionary<string, object>>(json) ?? new Dictionary<string, object>();
-                }
+                _coreSettings.Settings.SyncCommunicationDevice = value;
+                _coreSettings.Save();
+                SettingChanged?.Invoke(this, nameof(SyncCommunicationDevice));
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Trace.WriteLine($"Failed to load settings: {ex}");
-            }
-            return new Dictionary<string, object>();
         }
 
-        private void SaveSettings()
+        public bool ShowDisabledDevices
         {
-            try
+            get => _coreSettings.Settings.ShowDisabledDevices;
+            set
             {
-                var json = JsonSerializer.Serialize(_settings);
-                File.WriteAllText(_settingsFilePath, json);
+                _coreSettings.Settings.ShowDisabledDevices = value;
+                _coreSettings.Save();
+                SettingChanged?.Invoke(this, nameof(ShowDisabledDevices));
             }
-            catch (Exception ex)
+        }
+
+        public bool ShowDisconnectedDevices
+        {
+            get => _coreSettings.Settings.ShowDisconnectedDevices;
+            set
             {
-                System.Diagnostics.Trace.WriteLine($"Failed to save settings: {ex}");
+                _coreSettings.Settings.ShowDisconnectedDevices = value;
+                _coreSettings.Save();
+                SettingChanged?.Invoke(this, nameof(ShowDisconnectedDevices));
             }
         }
 

@@ -7,6 +7,8 @@ namespace AudioSwitcher.UI.Views
 {
     public sealed partial class ShellPage : Page
     {
+        private bool _pendingSettingsNavigation = false;
+
         public ShellPage()
         {
             this.InitializeComponent();
@@ -14,9 +16,19 @@ namespace AudioSwitcher.UI.Views
 
         private void NavView_Loaded(object sender, RoutedEventArgs e)
         {
-            // Select the first item by default
-            NavView.SelectedItem = NavView.MenuItems[0];
-            NavView_Navigate("OutputDevices", new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+            // Check if we have a pending navigation to settings
+            if (_pendingSettingsNavigation)
+            {
+                _pendingSettingsNavigation = false;
+                NavView.SelectedItem = NavView.SettingsItem;
+                NavView_Navigate("Settings", new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+            }
+            else
+            {
+                // Select the first item by default
+                NavView.SelectedItem = NavView.MenuItems[0];
+                NavView_Navigate("OutputDevices", new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+            }
         }
 
         private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
@@ -61,6 +73,23 @@ namespace AudioSwitcher.UI.Views
             {
                 ContentFrame.Navigate(_page, null, transitionInfo);
             }
+        }
+
+        /// <summary>
+        /// Navigates to the Settings page and selects the settings item in the nav.
+        /// If called before NavView is loaded, sets a flag to navigate on load.
+        /// </summary>
+        public void NavigateToSettings()
+        {
+            // If NavView isn't loaded yet, set a flag to navigate when it loads
+            if (ContentFrame.CurrentSourcePageType == null)
+            {
+                _pendingSettingsNavigation = true;
+                return;
+            }
+            
+            NavView.SelectedItem = NavView.SettingsItem;
+            NavView_Navigate("Settings", new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
         }
     }
 }

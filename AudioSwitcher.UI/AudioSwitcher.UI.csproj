@@ -18,6 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251106002" />
     <Manifest Include="$(ApplicationManifest)" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.0" />

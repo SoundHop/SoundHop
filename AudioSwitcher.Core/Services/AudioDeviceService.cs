@@ -27,7 +27,7 @@ namespace AudioSwitcher.Core.Services
         [DllImport("ole32.dll")]
         private static extern int PropVariantClear(ref PropVariant pvar);
 
-        public List<AudioDevice> GetPlaybackDevices()
+        public List<AudioDevice> GetPlaybackDevices(DeviceState stateFilter = DeviceState.Active)
         {
             var devices = new List<AudioDevice>();
             IMMDeviceEnumerator? enumerator = null;
@@ -37,6 +37,8 @@ namespace AudioSwitcher.Core.Services
             {
                 enumerator = (IMMDeviceEnumerator)new MMDeviceEnumeratorComObject();
                 string? defaultDeviceId = null;
+                string? defaultCommsDeviceId = null;
+                
                 try
                 {
                     enumerator.GetDefaultAudioEndpoint(EDataFlow.Render, ERole.Multimedia, out IMMDevice defaultDevice);
@@ -45,9 +47,17 @@ namespace AudioSwitcher.Core.Services
                 }
                 catch { /* Ignore if no default device */ }
 
+                try
+                {
+                    enumerator.GetDefaultAudioEndpoint(EDataFlow.Render, ERole.Communications, out IMMDevice defaultCommsDevice);
+                    defaultCommsDevice.GetId(out defaultCommsDeviceId);
+                    Marshal.ReleaseComObject(defaultCommsDevice);
+                }
+                catch { /* Ignore if no default comms device */ }
+
                 // Manual marshaling to bypass possible IID cast issues
                 IntPtr collectionPtr = IntPtr.Zero;
-                int hr = enumerator.EnumAudioEndpoints(EDataFlow.Render, (uint)DeviceState.Active, out collectionPtr);
+                int hr = enumerator.EnumAudioEndpoints(EDataFlow.Render, (uint)stateFilter, out collectionPtr);
                 
                 if (hr == 0 && collectionPtr != IntPtr.Zero)
                 {
@@ -78,6 +88,7 @@ namespace AudioSwitcher.Core.Services
                                 Marshal.Release(devicePtr);
                                 
                                 device.GetId(out string id);
+                                device.GetState(out DeviceState deviceState);
                                 string name = GetDeviceProperty(device, PropertyKey.FriendlyName);
                                 string iconPath = GetDeviceProperty(device, PropertyKey.IconPath);
                                 
@@ -86,7 +97,9 @@ namespace AudioSwitcher.Core.Services
                                     Id = id,
                                     Name = name,
                                     IsDefault = id == defaultDeviceId,
-                                    IconPath = ParseIconPath(iconPath) 
+                                    IsDefaultComms = id == defaultCommsDeviceId,
+                                    IconPath = ParseIconPath(iconPath),
+                                    State = (uint)deviceState
                                 });
                             }
                         }
@@ -129,6 +142,60 @@ namespace AudioSwitcher.Core.Services
             finally
             {
                 if (policyConfig != null) Marshal.ReleaseComObject(policyConfig);
+            }
+        }
+
+        public void SetDefaultCommunicationDevice(string deviceId)
+        {
+            IPolicyConfig? policyConfig = null;
+            try
+            {
+                policyConfig = (IPolicyConfig)new PolicyConfigClient();
+                policyConfig.SetDefaultEndpoint(deviceId, ERole.Communications);
+            }
+            finally
+            {
+                if (policyConfig != null) Marshal.ReleaseComObject(policyConfig);
+            }
+        }
+
+        public void SetDeviceEnabled(string deviceId, bool enabled)
+        {
+            IPolicyConfig? policyConfig = null;
+            try
+            {
+                policyConfig = (IPolicyConfig)new PolicyConfigClient();
+                policyConfig.SetEndpointVisibility(deviceId, enabled ? 1 : 0);
+            }
+            finally
+            {
+                if (policyConfig != null) Marshal.ReleaseComObject(policyConfig);
+            }
+        }
+
+        public void OpenDeviceProperties(string deviceId)
+        {
+            // Open the Sound control panel
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "mmsys.cpl",
+                    UseShellExecute = true
+                });
+            }
+            catch
+            {
+                // Fallback: open Windows Settings sound page
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = "ms-settings:sound",
+                        UseShellExecute = true
+                    });
+                }
+                catch { }
             }
         }
         

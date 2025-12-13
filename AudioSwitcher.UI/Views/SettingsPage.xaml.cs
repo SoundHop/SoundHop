@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using AudioSwitcher.UI.Services;
+using AudioSwitcher.UI.ViewModels;
 
 namespace AudioSwitcher.UI.Views
 {
@@ -12,9 +13,14 @@ namespace AudioSwitcher.UI.Views
             
             // Initialize from settings
             RunAtStartupToggle.IsOn = SettingsService.Instance.RunAtStartup;
+            StartMinimizedToggle.IsOn = SettingsService.Instance.StartMinimized;
             ShowTrayIconToggle.IsOn = SettingsService.Instance.ShowTrayIcon;
             MinimizeToTrayToggle.IsOn = SettingsService.Instance.MinimizeToTray;
             CloseToTrayToggle.IsOn = SettingsService.Instance.CloseToTray;
+            QuickSwitchToggle.IsOn = SettingsService.Instance.QuickSwitchMode;
+            SyncCommunicationToggle.IsOn = SettingsService.Instance.SyncCommunicationDevice;
+            ShowDisabledToggle.IsOn = SettingsService.Instance.ShowDisabledDevices;
+            ShowDisconnectedToggle.IsOn = SettingsService.Instance.ShowDisconnectedDevices;
         }
 
         private void RunAtStartupToggle_Toggled(object sender, RoutedEventArgs e)
@@ -22,6 +28,14 @@ namespace AudioSwitcher.UI.Views
             if (sender is ToggleSwitch ts)
             {
                 SettingsService.Instance.RunAtStartup = ts.IsOn;
+            }
+        }
+
+        private void StartMinimizedToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch ts)
+            {
+                SettingsService.Instance.StartMinimized = ts.IsOn;
             }
         }
 
@@ -48,5 +62,47 @@ namespace AudioSwitcher.UI.Views
                 SettingsService.Instance.CloseToTray = ts.IsOn;
             }
         }
+
+        private void QuickSwitchToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch ts)
+            {
+                SettingsService.Instance.QuickSwitchMode = ts.IsOn;
+            }
+        }
+
+        private void SyncCommunicationToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch ts)
+            {
+                SettingsService.Instance.SyncCommunicationDevice = ts.IsOn;
+            }
+        }
+
+        private void ShowDisabledToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch ts)
+            {
+                SettingsService.Instance.ShowDisabledDevices = ts.IsOn;
+                // Trigger device reload
+                MainViewModel.Instance.LoadDevices();
+            }
+        }
+
+        private void ShowDisconnectedToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch ts)
+            {
+                SettingsService.Instance.ShowDisconnectedDevices = ts.IsOn;
+                // Trigger device reload
+                MainViewModel.Instance.LoadDevices();
+            }
+        }
+
+        /// <summary>
+        /// Returns "On" or "Off" text for toggle state display.
+        /// </summary>
+        public string GetToggleText(bool isOn) => isOn ? "On" : "Off";
     }
 }
+

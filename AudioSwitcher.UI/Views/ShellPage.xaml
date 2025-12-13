@@ -5,19 +5,35 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="using:AudioSwitcher.UI.Views"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="Transparent">
 
-    <NavigationView x:Name="NavView" 
-                    PaneDisplayMode="Auto" 
-                    ItemInvoked="NavView_ItemInvoked" 
-                    Loaded="NavView_Loaded">
-        <NavigationView.MenuItems>
-            <NavigationViewItem Tag="OutputDevices" Icon="Audio" Content="Output Devices" />
-            <NavigationViewItem Tag="Hotkeys" Icon="Keyboard" Content="Hotkeys" />
-        </NavigationView.MenuItems>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Custom Title Bar Drag Region -->
+        <Grid x:Name="AppTitleBar" Grid.Row="0" VerticalAlignment="Stretch" IsHitTestVisible="True">
+            <TextBlock Text="Audio Switcher" 
+                       Style="{ThemeResource CaptionTextBlockStyle}" 
+                       Margin="48,0,0,0"
+                       VerticalAlignment="Center"/>
+        </Grid>
 
-
-
-        <Frame x:Name="ContentFrame" />
-    </NavigationView>
+        <NavigationView x:Name="NavView" 
+                        Grid.Row="1"
+                        PaneDisplayMode="Auto"
+                        IsBackButtonVisible="Collapsed"
+                        IsTitleBarAutoPaddingEnabled="False"
+                        ItemInvoked="NavView_ItemInvoked" 
+                        Loaded="NavView_Loaded">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Tag="OutputDevices" Icon="Audio" Content="Output Devices" />
+                <NavigationViewItem Tag="Hotkeys" Icon="Keyboard" Content="Hotkeys" />
+            </NavigationView.MenuItems>
+            <Frame x:Name="ContentFrame" />
+        </NavigationView>
+    </Grid>
 </Page>

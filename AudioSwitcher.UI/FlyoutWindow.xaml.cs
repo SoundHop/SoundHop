@@ -41,6 +41,7 @@ namespace AudioSwitcher.UI
             if (AppWindowTitleBar.IsCustomizationSupported())
             {
                _appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+               _appWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Collapsed;
                _appWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
                _appWindow.TitleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
             }
@@ -48,7 +49,6 @@ namespace AudioSwitcher.UI
             // Force DWM Dark Mode to prevent white flash
             UpdateTheme(Application.Current.RequestedTheme == ApplicationTheme.Dark);
 
-            // Initialize SystemTrayManager
             // Initialize SystemTrayManager
             // We use a dummy window helper because we manage our own window visibility/positioning
             var windowHelper = new WindowHelper(this);
@@ -60,20 +60,17 @@ namespace AudioSwitcher.UI
                 IsIconVisible = SettingsService.Instance.ShowTrayIcon
             };
 
-            // Custom "Settings" action
+            // Action to open dashboard (just open the window)
+            TrayManager.OpenDashboardAction = () => 
+            {
+                OpenDashboard();
+            };
+
+            // Action to open settings (open dashboard and navigate to settings)
             TrayManager.OpenSettingsAction = () => 
             {
-                if (_dashboardWindow == null)
-                {
-                    _dashboardWindow = new DashboardWindow();
-                    _dashboardWindow.Closed += (s, e) => _dashboardWindow = null;
-                    _dashboardWindow.Activate();
-                }
-                else
-                {
-                    _dashboardWindow.Activate();
-                    // Optional: BringToFront logic if needed
-                }
+                var dashboard = OpenDashboard();
+                dashboard.NavigateToSettings();
             };
             
             // Listen for settings changes
@@ -97,6 +94,15 @@ namespace AudioSwitcher.UI
                 else
                 {
                     ShowWithAnimation();
+                }
+            };
+
+            // Quick switch on middle click (cycle favorites)
+            TrayManager.SystemTrayIcon.MiddleClick += (s, e) =>
+            {
+                if (SettingsService.Instance.QuickSwitchMode)
+                {
+                    ViewModels.MainViewModel.Instance.CycleToNextFavorite();
                 }
             };
 
@@ -140,9 +146,9 @@ namespace AudioSwitcher.UI
                 // Determine color based on theme
                 var brush = System.Drawing.Brushes.White;
 
-                // Create font
+                // Create font - use 30px to fill more of the icon area
                 // "Segoe Fluent Icons" might need to be installed or use fallback
-                using (var font = new System.Drawing.Font("Segoe Fluent Icons", 24, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel))
+                using (var font = new System.Drawing.Font("Segoe Fluent Icons", 30, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel))
                 {
                     // Measure string to center it
                     var size = g.MeasureString(glyph, font);
@@ -300,5 +306,19 @@ namespace AudioSwitcher.UI
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int dwAttribute, IntPtr pvAttribute, int cbAttribute);
 
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
+        /// <summary>
+        /// Opens the dashboard window, creating it if necessary, and returns it.
+        /// </summary>
+        public DashboardWindow OpenDashboard()
+        {
+            if (_dashboardWindow == null)
+            {
+                _dashboardWindow = new DashboardWindow();
+                _dashboardWindow.Closed += (s, e) => _dashboardWindow = null;
+            }
+            _dashboardWindow.Activate();
+            return _dashboardWindow;
+        }
     }
 }
