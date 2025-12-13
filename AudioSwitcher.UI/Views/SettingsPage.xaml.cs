@@ -14,9 +14,6 @@ namespace AudioSwitcher.UI.Views
             // Initialize from settings
             RunAtStartupToggle.IsOn = SettingsService.Instance.RunAtStartup;
             StartMinimizedToggle.IsOn = SettingsService.Instance.StartMinimized;
-            ShowTrayIconToggle.IsOn = SettingsService.Instance.ShowTrayIcon;
-            MinimizeToTrayToggle.IsOn = SettingsService.Instance.MinimizeToTray;
-            CloseToTrayToggle.IsOn = SettingsService.Instance.CloseToTray;
             QuickSwitchToggle.IsOn = SettingsService.Instance.QuickSwitchMode;
             SyncCommunicationToggle.IsOn = SettingsService.Instance.SyncCommunicationDevice;
             ShowDisabledToggle.IsOn = SettingsService.Instance.ShowDisabledDevices;
@@ -36,30 +33,6 @@ namespace AudioSwitcher.UI.Views
             if (sender is ToggleSwitch ts)
             {
                 SettingsService.Instance.StartMinimized = ts.IsOn;
-            }
-        }
-
-        private void ShowTrayIconToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-             if (sender is ToggleSwitch ts)
-            {
-                SettingsService.Instance.ShowTrayIcon = ts.IsOn;
-            }
-        }
-
-        private void MinimizeToTrayToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-             if (sender is ToggleSwitch ts)
-            {
-                SettingsService.Instance.MinimizeToTray = ts.IsOn;
-            }
-        }
-
-        private void CloseToTrayToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-             if (sender is ToggleSwitch ts)
-            {
-                SettingsService.Instance.CloseToTray = ts.IsOn;
             }
         }
 

@@ -34,6 +34,25 @@ namespace AudioSwitcher.UI.Controls
         public DeviceListControl()
         {
             this.InitializeComponent();
+            InitializeSortViewOptions();
+        }
+
+        private void InitializeSortViewOptions()
+        {
+            var settings = SettingsService.Instance;
+            
+            // Initialize sort mode checkmarks
+            UpdateSortModeCheckmarks(settings.DeviceSortMode);
+            
+            // Initialize view option checkmarks
+            ShowDisabledCheck.Visibility = settings.ShowDisabledDevices ? Visibility.Visible : Visibility.Collapsed;
+            ShowDisconnectedCheck.Visibility = settings.ShowDisconnectedDevices ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void UpdateSortModeCheckmarks(string sortMode)
+        {
+            SortByFriendlyNameCheck.Visibility = sortMode == "FriendlyName" ? Visibility.Visible : Visibility.Collapsed;
+            SortByDeviceNameCheck.Visibility = sortMode == "DeviceName" ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private static void OnViewModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -293,6 +312,43 @@ namespace AudioSwitcher.UI.Controls
                     ViewModel.SetDeviceIcon(device, null); // Reset to default
                 }
             }
+        }
+
+        // Sort/View Options Handlers
+        private void SortByFriendlyName_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsService.Instance.DeviceSortMode = "FriendlyName";
+            UpdateSortModeCheckmarks("FriendlyName");
+            ViewModel?.LoadDevices();
+            UpdateDeviceLists();
+        }
+
+        private void SortByDeviceName_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsService.Instance.DeviceSortMode = "DeviceName";
+            UpdateSortModeCheckmarks("DeviceName");
+            ViewModel?.LoadDevices();
+            UpdateDeviceLists();
+        }
+
+        private void ShowDisabledToggle_Click(object sender, RoutedEventArgs e)
+        {
+            // Toggle the setting
+            var newValue = !SettingsService.Instance.ShowDisabledDevices;
+            SettingsService.Instance.ShowDisabledDevices = newValue;
+            ShowDisabledCheck.Visibility = newValue ? Visibility.Visible : Visibility.Collapsed;
+            ViewModel?.LoadDevices();
+            UpdateDeviceLists();
+        }
+
+        private void ShowDisconnectedToggle_Click(object sender, RoutedEventArgs e)
+        {
+            // Toggle the setting
+            var newValue = !SettingsService.Instance.ShowDisconnectedDevices;
+            SettingsService.Instance.ShowDisconnectedDevices = newValue;
+            ShowDisconnectedCheck.Visibility = newValue ? Visibility.Visible : Visibility.Collapsed;
+            ViewModel?.LoadDevices();
+            UpdateDeviceLists();
         }
     }
 }

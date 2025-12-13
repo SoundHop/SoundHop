@@ -130,6 +130,17 @@ namespace AudioSwitcher.UI.Services
             }
         }
 
+        public string DeviceSortMode
+        {
+            get => _coreSettings.Settings.DeviceSortMode;
+            set
+            {
+                _coreSettings.Settings.DeviceSortMode = value;
+                _coreSettings.Save();
+                SettingChanged?.Invoke(this, nameof(DeviceSortMode));
+            }
+        }
+
         private bool IsAppRunAtStartup()
         {
             try

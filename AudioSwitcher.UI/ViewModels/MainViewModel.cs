@@ -166,10 +166,19 @@ namespace AudioSwitcher.UI.ViewModels
 
             // Retrieve updated list for sorting (Devices collection is mixed order now)
             var sortedList = Devices.ToList();
+            var sortMode = _settingsService.Settings.DeviceSortMode;
+            
             sortedList.Sort((a, b) => 
             {
+                // Favorites always come first
                 if (a.IsFavorite != b.IsFavorite) return b.IsFavorite.CompareTo(a.IsFavorite);
-                return string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase);
+                
+                // Then sort by selected mode
+                return sortMode switch
+                {
+                    "DeviceName" => string.Compare(a.DisplaySubName ?? "", b.DisplaySubName ?? "", StringComparison.OrdinalIgnoreCase),
+                    _ => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase) // FriendlyName (default)
+                };
             });
 
             // Reorder if necessary (bubble sort / move)

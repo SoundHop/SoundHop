@@ -21,7 +21,7 @@ namespace AudioSwitcher.Core.Services
             public bool ShowTrayIcon { get; set; } = true;
             public bool MinimizeToTray { get; set; } = false;
             public bool CloseToTray { get; set; } = true;
-            public bool StartMinimized { get; set; } = false;
+            public bool StartMinimized { get; set; } = true;
             
             // Device Switching
             public bool QuickSwitchMode { get; set; } = false;
@@ -30,6 +30,7 @@ namespace AudioSwitcher.Core.Services
             // Device Display
             public bool ShowDisabledDevices { get; set; } = false;
             public bool ShowDisconnectedDevices { get; set; } = false;
+            public string DeviceSortMode { get; set; } = "FriendlyName"; // FriendlyName, DeviceName, LastUsed
             
             // Custom Device Icons (device ID -> Fluent icon glyph)
             public Dictionary<string, string> CustomDeviceIcons { get; set; } = new Dictionary<string, string>();

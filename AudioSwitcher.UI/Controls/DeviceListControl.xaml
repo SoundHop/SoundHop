@@ -56,7 +56,7 @@
                         <MenuFlyoutItem Text="Set as default communication device" Click="SetDefaultCommunication_Click" Tag="{x:Bind}"
                                         IsEnabled="{x:Bind IsActive}">
                             <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE720;"/>
+                                <FontIcon Glyph="&#xE717;"/>
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator/>
@@ -99,7 +99,7 @@
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock Text="{x:Bind DisplayName}" Style="{ThemeResource BodyTextBlockStyle}"/>
-                        <FontIcon Glyph="&#xE720;" FontFamily="Segoe Fluent Icons" FontSize="12" 
+                        <FontIcon Glyph="&#xE717;" FontFamily="Segoe Fluent Icons" FontSize="12" 
                                   Foreground="{ThemeResource AccentFillColorDefaultBrush}"
                                   VerticalAlignment="Center"
                                   ToolTipService.ToolTip="Default Communication Device"
@@ -145,32 +145,80 @@
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
-
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel>
-            <!-- Favorites section -->
-            <ListView x:Name="FavoritesList" 
-                      SelectionMode="Single"
-                      IsItemClickEnabled="True"
-                      ItemClick="DeviceList_ItemClick"
-                      ItemTemplate="{StaticResource DeviceItemTemplate}"
-                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                      ScrollViewer.VerticalScrollMode="Disabled"/>
-            
-            <!-- Separator between favorites and non-favorites -->
-            <Border x:Name="FavoritesDivider" 
-                    Height="1" 
-                    Background="{ThemeResource SystemControlForegroundBaseLowBrush}" 
-                    Margin="0,4,0,4"/>
-            
-            <!-- Non-favorites section -->
-            <ListView x:Name="NonFavoritesList" 
-                      SelectionMode="Single"
-                      IsItemClickEnabled="True"
-                      ItemClick="DeviceList_ItemClick"
-                      ItemTemplate="{StaticResource DeviceItemTemplate}"
-                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                      ScrollViewer.VerticalScrollMode="Disabled"/>
-        </StackPanel>
-    </ScrollViewer>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Sort/View Options Header -->
+        <Grid Grid.Row="0" Margin="8,4,8,4">
+            <DropDownButton x:Name="SortOptionsButton" 
+                           HorizontalAlignment="Right"
+                           Background="Transparent"
+                           BorderThickness="0"
+                           Padding="8,4">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <FontIcon Glyph="&#xE8CB;" FontSize="12"/>
+                    <TextBlock Text="Sort" FontSize="12"/>
+                </StackPanel>
+                <DropDownButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <!-- Sort Options -->
+                        <MenuFlyoutItem x:Name="SortByFriendlyName" Text="Sort by friendly name" Click="SortByFriendlyName_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon x:Name="SortByFriendlyNameCheck" Glyph="&#xE73E;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Name="SortByDeviceName" Text="Sort by device name" Click="SortByDeviceName_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon x:Name="SortByDeviceNameCheck" Glyph="&#xE73E;" Visibility="Collapsed"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator/>
+                        <!-- View Options -->
+                        <MenuFlyoutItem x:Name="ShowDisabledMenuItem" Text="Show disabled devices" Click="ShowDisabledToggle_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon x:Name="ShowDisabledCheck" Glyph="&#xE73E;" Visibility="Collapsed"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Name="ShowDisconnectedMenuItem" Text="Show disconnected devices" Click="ShowDisconnectedToggle_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon x:Name="ShowDisconnectedCheck" Glyph="&#xE73E;" Visibility="Collapsed"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
+        </Grid>
+        
+        <!-- Device Lists -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Favorites section -->
+                <ListView x:Name="FavoritesList" 
+                          SelectionMode="Single"
+                          IsItemClickEnabled="True"
+                          ItemClick="DeviceList_ItemClick"
+                          ItemTemplate="{StaticResource DeviceItemTemplate}"
+                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                          ScrollViewer.VerticalScrollMode="Disabled"/>
+                
+                <!-- Separator between favorites and non-favorites -->
+                <Border x:Name="FavoritesDivider" 
+                        Height="1" 
+                        Background="{ThemeResource SystemControlForegroundBaseLowBrush}" 
+                        Margin="0,4,0,4"/>
+                
+                <!-- Non-favorites section -->
+                <ListView x:Name="NonFavoritesList" 
+                          SelectionMode="Single"
+                          IsItemClickEnabled="True"
+                          ItemClick="DeviceList_ItemClick"
+                          ItemTemplate="{StaticResource DeviceItemTemplate}"
+                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                          ScrollViewer.VerticalScrollMode="Disabled"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

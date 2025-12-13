@@ -185,9 +185,9 @@ namespace AudioSwitcher.UI.SystemTray.Core
                 new SystemTrayContextMenuWindow.Item(texts[0], new Command(OpenSettings), "\uE713"),            // Settings gear
                 new SystemTrayContextMenuWindow.Item("--", null),
                 new SystemTrayContextMenuWindow.Item("Sound control panel", new Command(OpenSoundControlPanel), "\uE7F5"),  // Speaker
-                new SystemTrayContextMenuWindow.Item("Sound settings", new Command(OpenSoundSettings), "\uE8B5"),           // Audio
+                new SystemTrayContextMenuWindow.Item("Sound settings", new Command(OpenSoundSettings), "\uE9E9"),           // Equalizer
                 new SystemTrayContextMenuWindow.Item("--", null),
-                new SystemTrayContextMenuWindow.Item(texts[1], new Command(() => Application.Current.Exit()), "\uE8BB")     // Exit door
+                new SystemTrayContextMenuWindow.Item(texts[1], new Command(() => Application.Current.Exit()), "\uE711")     // Cancel
             ];
         }
 

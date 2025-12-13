@@ -22,7 +22,15 @@ namespace AudioSwitcher.UI
             }
             else
             {
+                // Open Dashboard first, then quietly initialize the flyout in background
+                var dashboard = Window.OpenDashboard();
+                
+                // Activate flyout briefly for tray icon, but it stays behind the dashboard
                 Window.Activate();
+                Window.Hide();
+                
+                // Bring dashboard to front
+                dashboard.Activate();
             }
         }
 
