@@ -16,7 +16,7 @@
         
         <!-- Custom Title Bar Drag Region -->
         <Grid x:Name="AppTitleBar" Grid.Row="0" VerticalAlignment="Stretch" IsHitTestVisible="True">
-            <TextBlock Text="Audio Switcher" 
+            <TextBlock Text="SoundHop" 
                        Style="{ThemeResource CaptionTextBlockStyle}" 
                        Margin="48,0,0,0"
                        VerticalAlignment="Center"/>

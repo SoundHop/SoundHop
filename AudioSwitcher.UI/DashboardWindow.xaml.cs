@@ -12,7 +12,7 @@ namespace AudioSwitcher.UI
         public DashboardWindow()
         {
             this.InitializeComponent();
-            this.Title = "Audio Switcher Dashboard";
+            this.Title = "SoundHop Dashboard";
             
             // Apply Mica backdrop
             this.SystemBackdrop = new MicaBackdrop();

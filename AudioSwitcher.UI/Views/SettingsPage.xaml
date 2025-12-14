@@ -18,7 +18,7 @@
                        Margin="0,0,0,8"/>
             
             <controls:SettingsCard Header="Launch on startup" 
-                                   Description="Start Audio Switcher when Windows starts">
+                                   Description="Start SoundHop when Windows starts">
                 <controls:SettingsCard.HeaderIcon>
                     <FontIcon Glyph="&#xE7B5;"/>
                 </controls:SettingsCard.HeaderIcon>
@@ -116,7 +116,7 @@
                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                        Margin="0,24,0,8"/>
             
-            <controls:SettingsCard Header="Audio Switcher"
+            <controls:SettingsCard Header="SoundHop"
                                    Description="A modern audio device switcher for Windows">
                 <controls:SettingsCard.HeaderIcon>
                     <FontIcon Glyph="&#xE946;"/>

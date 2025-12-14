@@ -14,7 +14,7 @@ using AudioSwitcher.UI.Services;
 namespace AudioSwitcher.UI
 {
     /// <summary>
-    /// Main flyout window for Audio Switcher.
+    /// Main flyout window for SoundHop.
     /// Positioning logic adapted from EarTrumpet (https://github.com/File-New-Project/EarTrumpet) - MIT License.
     /// </summary>
     public sealed partial class FlyoutWindow : Window
@@ -30,7 +30,7 @@ namespace AudioSwitcher.UI
         {
             this.InitializeComponent();
 
-            this.Title = "Audio Switcher";
+            this.Title = "SoundHop";
 
             // Get window handle and AppWindow
             _hWnd = WindowNative.GetWindowHandle(this);
@@ -54,7 +54,7 @@ namespace AudioSwitcher.UI
             var windowHelper = new WindowHelper(this);
             TrayManager = new SystemTrayManager(windowHelper)
             {
-                IconToolTip = "Audio Switcher",
+                IconToolTip = "SoundHop",
                 MinimizeToTray = false, // We control visibility manually
                 CloseButtonMinimizesToTray = false,
                 IsIconVisible = SettingsService.Instance.ShowTrayIcon
