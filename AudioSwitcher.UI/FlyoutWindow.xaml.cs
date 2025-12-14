@@ -72,6 +72,13 @@ namespace AudioSwitcher.UI
                 var dashboard = OpenDashboard();
                 dashboard.NavigateToSettings();
             };
+
+            // Action to open hotkeys (open dashboard and navigate to hotkeys)
+            TrayManager.OpenHotkeysAction = () => 
+            {
+                var dashboard = OpenDashboard();
+                dashboard.NavigateToHotkeys();
+            };
             
             // Listen for settings changes
             SettingsService.Instance.SettingChanged += (s, settingName) =>
@@ -110,7 +117,7 @@ namespace AudioSwitcher.UI
             this.Activated += MainWindow_Activated;
 
             // Set initial size
-            _appWindow.Resize(new Windows.Graphics.SizeInt32(450, 500));
+            _appWindow.Resize(new Windows.Graphics.SizeInt32(450, 590));
         }
 
         public void UpdateIconFromFluentGlyph(string glyph, string? tooltip = null)
@@ -164,7 +171,8 @@ namespace AudioSwitcher.UI
 
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
-            // Don't hide if we are just animating or if it's not a deactivation
+            // Don't hide if we are animating (either showing or hiding)
+            // This prevents the window from immediately hiding when taskbar is brought to front during show
             if (args.WindowActivationState == WindowActivationState.Deactivated && !_isAnimating)
             {
                 HideWithAnimation();
@@ -181,30 +189,45 @@ namespace AudioSwitcher.UI
 
         private void ShowWithAnimation()
         {
+            // Set animating flag BEFORE showing to prevent deactivation handler from hiding
+            _isAnimating = true;
+            
+            // Re-apply DWM dark mode to prevent white flash after idle
+            UpdateTheme(Application.Current.RequestedTheme == ApplicationTheme.Dark);
+            
             // Get taskbar state for positioning
             _lastTaskbarState = WindowsTaskbar.Current;
             
             // Position the window
             PositionFlyout(_lastTaskbarState);
 
-            // Bring taskbar to front first (like EarTrumpet does)
-            WindowsTaskbar.SetForegroundWindow(WindowsTaskbar.GetTaskbarHwnd());
+            // === Layered window approach to prevent white flash ===
+            // Make window layered and set alpha to 0 before showing
+            int exStyle = GetWindowLong(_hWnd, GWL_EXSTYLE);
+            SetWindowLong(_hWnd, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);
+            SetLayeredWindowAttributes(_hWnd, 0, 0, LWA_ALPHA); // Alpha = 0 (invisible)
 
-            // Show window
+            // Show window (invisible due to alpha=0)
             ShowWindow(_hWnd, 5); // SW_SHOW
             this.Activate();
 
-            // Ensure content is laid out before animating
+            // Bring taskbar to front first (like EarTrumpet does)
+            WindowsTaskbar.SetForegroundWindow(WindowsTaskbar.GetTaskbarHwnd());
+
+            // Ensure content is laid out
             this.Content.UpdateLayout();
 
-            // Play entrance animation on next frame to ensure visual is ready
-            _isAnimating = true;
+            // On next frame, set alpha to 255 and start animation
+            // This gives the compositor time to initialize the backdrop
             DispatcherQueue.TryEnqueue(() =>
             {
+                // Set alpha to 255 (fully visible) - backdrop should be ready now
+                SetLayeredWindowAttributes(_hWnd, 0, 255, LWA_ALPHA);
+                
+                // Start entrance animation
                 AudioSwitcher.UI.Helpers.FlyoutAnimationHelper.BeginEntranceAnimation(this.Content, _lastTaskbarState.Location, () =>
                 {
                     _isAnimating = false;
-                    // Set as topmost and focus after animation
                     AudioSwitcher.Core.Interop.User32.SetForegroundWindow(_hWnd);
                 });
             });
@@ -295,6 +318,20 @@ namespace AudioSwitcher.UI
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        // Layered window support for alpha blending to prevent white flash
+        [DllImport("user32.dll")]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll")]
+        private static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+
+        private const int GWL_EXSTYLE = -20;
+        private const int WS_EX_LAYERED = 0x80000;
+        private const uint LWA_ALPHA = 0x02;
 
         private unsafe void UpdateTheme(bool isDarkTheme)
         {

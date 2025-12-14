@@ -129,6 +129,16 @@ namespace AudioSwitcher.Core.Models
         public bool IsDisconnected => State == 8; // DeviceState.Unplugged only
         public bool IsActive => State == 1; // DeviceState.Active
         
+        private bool _isInput;
+        /// <summary>
+        /// True if this is an input/capture device (microphone), false for output/playback device (speaker).
+        /// </summary>
+        public bool IsInput 
+        { 
+            get => _isInput; 
+            set { if (_isInput != value) { _isInput = value; OnPropertyChanged(); } } 
+        }
+        
         public string DisplayName 
         { 
             get 

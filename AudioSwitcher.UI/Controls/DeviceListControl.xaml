@@ -208,7 +208,7 @@
                 <Border x:Name="FavoritesDivider" 
                         Height="1" 
                         Background="{ThemeResource SystemControlForegroundBaseLowBrush}" 
-                        Margin="0,4,0,4"/>
+                        Margin="16,4,16,4"/>
                 
                 <!-- Non-favorites section -->
                 <ListView x:Name="NonFavoritesList" 

@@ -14,6 +14,16 @@
     RequestedTheme="Dark">
 
     <StackPanel Spacing="16" Width="300">
+        <!-- Device Type Selector -->
+        <StackPanel>
+            <TextBlock Text="Device Type" Style="{ThemeResource BodyTextBlockStyle}" Margin="0,0,0,8"/>
+            <RadioButtons x:Name="DeviceTypeSelector" MaxColumns="2" SelectionChanged="DeviceTypeSelector_SelectionChanged">
+                <RadioButton x:Name="OutputsRadio" Content="Outputs" IsChecked="True"/>
+                <RadioButton x:Name="InputsRadio" Content="Inputs"/>
+            </RadioButtons>
+        </StackPanel>
+        
+        <!-- Audio Device Picker -->
         <ComboBox x:Name="DeviceComboBox" Header="Audio Device" HorizontalAlignment="Stretch" 
                   DisplayMemberPath="Name" 
                   IsEnabled="True"/>

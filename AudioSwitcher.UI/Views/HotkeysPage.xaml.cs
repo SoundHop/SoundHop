@@ -20,7 +20,9 @@ namespace AudioSwitcher.UI.Views
 
         private async void AddHotkey_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            var dialog = new AudioSwitcher.UI.Dialogs.HotkeyEditorDialog(ViewModel.Devices);
+            var dialog = new AudioSwitcher.UI.Dialogs.HotkeyEditorDialog(
+                ViewModel.Devices, 
+                ViewModel.InputDevices);
             dialog.XamlRoot = this.XamlRoot;
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary && dialog.ResultHotkey != null && dialog.SelectedDevice != null)
@@ -36,7 +38,10 @@ namespace AudioSwitcher.UI.Views
                 if (info.IsConnected && info.Device != null)
                 {
                     // Connected device - allow full editing with device selection
-                    var dialog = new AudioSwitcher.UI.Dialogs.HotkeyEditorDialog(ViewModel.Devices, info.Device);
+                    var dialog = new AudioSwitcher.UI.Dialogs.HotkeyEditorDialog(
+                        ViewModel.Devices, 
+                        ViewModel.InputDevices, 
+                        info.Device);
                     dialog.XamlRoot = this.XamlRoot;
                     var result = await dialog.ShowAsync();
                     if (result == ContentDialogResult.Primary && dialog.ResultHotkey != null)

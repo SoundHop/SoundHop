@@ -21,23 +21,56 @@ namespace AudioSwitcher.UI.Dialogs
         private bool _isCapturing;
         private KeyModifiers _currentModifiers;
         private int _currentKey;
-        private readonly List<AudioDevice> _allDevices;
+        private readonly List<AudioDevice> _outputDevices;
+        private readonly List<AudioDevice> _inputDevices;
+        private bool _isInitialized = false;
 
-        public HotkeyEditorDialog(IEnumerable<AudioDevice> devices, AudioDevice? preSelectedDevice = null)
+        /// <summary>
+        /// Constructor with separate output and input device lists
+        /// </summary>
+        public HotkeyEditorDialog(
+            IEnumerable<AudioDevice> outputDevices, 
+            IEnumerable<AudioDevice> inputDevices, 
+            AudioDevice? preSelectedDevice = null,
+            bool? selectInputs = null)
         {
             this.InitializeComponent();
-            _allDevices = devices.ToList();
-            DeviceComboBox.ItemsSource = _allDevices;
+            _outputDevices = outputDevices.OrderBy(d => d.Name).ToList();
+            _inputDevices = inputDevices.OrderBy(d => d.Name).ToList();
             
+            // If a device is pre-selected, determine its type and lock selection
             if (preSelectedDevice != null)
             {
+                if (preSelectedDevice.IsInput)
+                {
+                    InputsRadio.IsChecked = true;
+                    LoadDevices(isInput: true);
+                }
+                else
+                {
+                    OutputsRadio.IsChecked = true;
+                    LoadDevices(isInput: false);
+                }
                 DeviceComboBox.SelectedItem = preSelectedDevice;
                 DeviceComboBox.IsEnabled = false;
+                DeviceTypeSelector.IsEnabled = false;
             }
             else
             {
-                DeviceComboBox.SelectedIndex = 0;
+                // If selectInputs is specified, use that, otherwise default to outputs
+                if (selectInputs == true)
+                {
+                    InputsRadio.IsChecked = true;
+                    LoadDevices(isInput: true);
+                }
+                else
+                {
+                    OutputsRadio.IsChecked = true;
+                    LoadDevices(isInput: false);
+                }
             }
+            
+            _isInitialized = true;
         }
 
         /// <summary>
@@ -46,25 +79,25 @@ namespace AudioSwitcher.UI.Dialogs
         public HotkeyEditorDialog(Hotkey? existingHotkey, string deviceName)
         {
             this.InitializeComponent();
-            _allDevices = new List<AudioDevice>();
+            _outputDevices = new List<AudioDevice>();
+            _inputDevices = new List<AudioDevice>();
             
-            // Hide device combo and show device name as text
+            // Hide device type selector and combo, show device name as text
+            DeviceTypeSelector.Visibility = Visibility.Collapsed;
             DeviceComboBox.Visibility = Visibility.Collapsed;
             
-            // Display device name as read-only text
-            var deviceNameText = new TextBlock
+            // Add device name text to the parent StackPanel
+            var stackPanel = DeviceComboBox.Parent as StackPanel;
+            if (stackPanel != null)
             {
-                Text = deviceName + " (Disconnected)",
-                Style = (Style)Application.Current.Resources["BodyTextBlockStyle"],
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            
-            // Find the parent grid and add the text
-            if (DeviceComboBox.Parent is Grid parentGrid)
-            {
-                Grid.SetRow(deviceNameText, 0);
-                Grid.SetColumn(deviceNameText, 1);
-                parentGrid.Children.Add(deviceNameText);
+                var deviceNameText = new TextBlock
+                {
+                    Text = deviceName + " (Disconnected)",
+                    Style = (Style)Application.Current.Resources["BodyTextBlockStyle"],
+                    Margin = new Thickness(0, 0, 0, 16)
+                };
+                // Insert at position 1 (after the hidden device type selector)
+                stackPanel.Children.Insert(1, deviceNameText);
             }
             
             // Pre-fill existing hotkey if any
@@ -74,6 +107,26 @@ namespace AudioSwitcher.UI.Dialogs
                 _currentKey = existingHotkey.Key;
                 ResultHotkey = existingHotkey;
                 UpdatePreview();
+            }
+            
+            _isInitialized = true;
+        }
+
+        private void DeviceTypeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+            
+            bool isInput = InputsRadio.IsChecked == true;
+            LoadDevices(isInput);
+        }
+
+        private void LoadDevices(bool isInput)
+        {
+            var devices = isInput ? _inputDevices : _outputDevices;
+            DeviceComboBox.ItemsSource = devices;
+            if (devices.Any())
+            {
+                DeviceComboBox.SelectedIndex = 0;
             }
         }
 
@@ -209,7 +262,8 @@ namespace AudioSwitcher.UI.Dialogs
             if (ResultHotkey == null) return;
 
             var currentDevice = SelectedDevice;
-            var conflictingDevice = _allDevices.FirstOrDefault(d => 
+            var allDevices = _outputDevices.Concat(_inputDevices);
+            var conflictingDevice = allDevices.FirstOrDefault(d => 
                 d.HotKey != null && 
                 d.Id != currentDevice?.Id &&
                 d.HotKey.Modifiers == ResultHotkey.Modifiers && 

@@ -8,6 +8,7 @@ namespace AudioSwitcher.UI.Views
     public sealed partial class ShellPage : Page
     {
         private bool _pendingSettingsNavigation = false;
+        private bool _pendingHotkeysNavigation = false;
 
         public ShellPage()
         {
@@ -22,6 +23,11 @@ namespace AudioSwitcher.UI.Views
                 _pendingSettingsNavigation = false;
                 NavView.SelectedItem = NavView.SettingsItem;
                 NavView_Navigate("Settings", new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+            }
+            else if (_pendingHotkeysNavigation)
+            {
+                _pendingHotkeysNavigation = false;
+                NavigateToHotkeysInternal();
             }
             else
             {
@@ -58,6 +64,9 @@ namespace AudioSwitcher.UI.Views
                     case "OutputDevices":
                         _page = typeof(OutputDevicesPage);
                         break;
+                    case "InputDevices":
+                        _page = typeof(InputDevicesPage);
+                        break;
                     case "Hotkeys":
                         _page = typeof(HotkeysPage);
                         break;
@@ -90,6 +99,35 @@ namespace AudioSwitcher.UI.Views
             
             NavView.SelectedItem = NavView.SettingsItem;
             NavView_Navigate("Settings", new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+        }
+
+        /// <summary>
+        /// Navigates to the Hotkeys page.
+        /// </summary>
+        public void NavigateToHotkeys()
+        {
+            // If NavView isn't loaded yet, set a flag to navigate when it loads
+            if (ContentFrame.CurrentSourcePageType == null)
+            {
+                _pendingHotkeysNavigation = true;
+                return;
+            }
+            
+            NavigateToHotkeysInternal();
+        }
+
+        private void NavigateToHotkeysInternal()
+        {
+            // Find the Hotkeys nav item and select it
+            foreach (var item in NavView.MenuItems)
+            {
+                if (item is NavigationViewItem navItem && navItem.Tag?.ToString() == "Hotkeys")
+                {
+                    NavView.SelectedItem = navItem;
+                    NavView_Navigate("Hotkeys", new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+                    break;
+                }
+            }
         }
     }
 }

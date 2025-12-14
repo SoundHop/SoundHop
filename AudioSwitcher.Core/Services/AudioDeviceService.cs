@@ -29,6 +29,16 @@ namespace AudioSwitcher.Core.Services
 
         public List<AudioDevice> GetPlaybackDevices(DeviceState stateFilter = DeviceState.Active)
         {
+            return GetDevices(EDataFlow.Render, stateFilter);
+        }
+
+        public List<AudioDevice> GetCaptureDevices(DeviceState stateFilter = DeviceState.Active)
+        {
+            return GetDevices(EDataFlow.Capture, stateFilter);
+        }
+
+        private List<AudioDevice> GetDevices(EDataFlow dataFlow, DeviceState stateFilter)
+        {
             var devices = new List<AudioDevice>();
             IMMDeviceEnumerator? enumerator = null;
             IMMDeviceCollection? collection = null;
@@ -41,7 +51,7 @@ namespace AudioSwitcher.Core.Services
                 
                 try
                 {
-                    enumerator.GetDefaultAudioEndpoint(EDataFlow.Render, ERole.Multimedia, out IMMDevice defaultDevice);
+                    enumerator.GetDefaultAudioEndpoint(dataFlow, ERole.Multimedia, out IMMDevice defaultDevice);
                     defaultDevice.GetId(out defaultDeviceId);
                     Marshal.ReleaseComObject(defaultDevice);
                 }
@@ -49,7 +59,7 @@ namespace AudioSwitcher.Core.Services
 
                 try
                 {
-                    enumerator.GetDefaultAudioEndpoint(EDataFlow.Render, ERole.Communications, out IMMDevice defaultCommsDevice);
+                    enumerator.GetDefaultAudioEndpoint(dataFlow, ERole.Communications, out IMMDevice defaultCommsDevice);
                     defaultCommsDevice.GetId(out defaultCommsDeviceId);
                     Marshal.ReleaseComObject(defaultCommsDevice);
                 }
@@ -57,7 +67,7 @@ namespace AudioSwitcher.Core.Services
 
                 // Manual marshaling to bypass possible IID cast issues
                 IntPtr collectionPtr = IntPtr.Zero;
-                int hr = enumerator.EnumAudioEndpoints(EDataFlow.Render, (uint)stateFilter, out collectionPtr);
+                int hr = enumerator.EnumAudioEndpoints(dataFlow, (uint)stateFilter, out collectionPtr);
                 
                 if (hr == 0 && collectionPtr != IntPtr.Zero)
                 {
@@ -99,7 +109,8 @@ namespace AudioSwitcher.Core.Services
                                     IsDefault = id == defaultDeviceId,
                                     IsDefaultComms = id == defaultCommsDeviceId,
                                     IconPath = ParseIconPath(iconPath),
-                                    State = (uint)deviceState
+                                    State = (uint)deviceState,
+                                    IsInput = dataFlow == EDataFlow.Capture
                                 });
                             }
                         }

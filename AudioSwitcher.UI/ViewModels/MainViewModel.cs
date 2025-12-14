@@ -60,6 +60,16 @@ namespace AudioSwitcher.UI.ViewModels
             set { _devices = value; OnPropertyChanged(); }
         }
 
+        private ObservableCollection<AudioDevice> _inputDevices = new ObservableCollection<AudioDevice>();
+        /// <summary>
+        /// Input/capture devices (microphones).
+        /// </summary>
+        public ObservableCollection<AudioDevice> InputDevices
+        {
+            get => _inputDevices;
+            set { _inputDevices = value; OnPropertyChanged(); }
+        }
+
         private ObservableCollection<AudioDevice> _configuredHotkeys = new ObservableCollection<AudioDevice>();
         public ObservableCollection<AudioDevice> ConfiguredHotkeys
         {
@@ -82,6 +92,13 @@ namespace AudioSwitcher.UI.ViewModels
         {
             get => _defaultDevice;
             set { _defaultDevice = value; OnPropertyChanged(); }
+        }
+
+        private AudioDevice? _defaultInputDevice;
+        public AudioDevice? DefaultInputDevice
+        {
+            get => _defaultInputDevice;
+            set { _defaultInputDevice = value; OnPropertyChanged(); }
         }
 
         public void LoadDevices()
@@ -210,6 +227,105 @@ namespace AudioSwitcher.UI.ViewModels
             
             DefaultDevice = Devices.FirstOrDefault(d => d.IsDefault);
             ReloadHotkeys();
+            
+            // Also load input devices when output devices change
+            LoadInputDevices();
+        }
+
+        public void LoadInputDevices()
+        {
+            // Build device state filter from settings
+            var stateFilter = AudioSwitcher.Core.Com.DeviceState.Active;
+            if (_settingsService.Settings.ShowDisabledDevices)
+                stateFilter |= AudioSwitcher.Core.Com.DeviceState.Disabled;
+            if (_settingsService.Settings.ShowDisconnectedDevices)
+                stateFilter |= AudioSwitcher.Core.Com.DeviceState.Unplugged;
+
+            var newDevices = _service.GetCaptureDevices(stateFilter);
+            var favorites = _settingsService.Settings.FavoriteDeviceIds;
+            var customIcons = _settingsService.Settings.CustomDeviceIcons;
+
+            // Apply favorites and custom icons
+            foreach (var d in newDevices)
+            {
+                d.IsFavorite = favorites.Contains(d.Id);
+                if (customIcons.TryGetValue(d.Id, out var iconGlyph))
+                {
+                    d.CustomIconGlyph = iconGlyph;
+                }
+            }
+
+            // Sync: Remove missing
+            for (int i = InputDevices.Count - 1; i >= 0; i--)
+            {
+                if (!newDevices.Exists(d => d.Id == InputDevices[i].Id))
+                {
+                    InputDevices.RemoveAt(i);
+                }
+            }
+            
+            // Sync: Update / Add
+            foreach (var newDev in newDevices)
+            {
+                var existing = InputDevices.FirstOrDefault(d => d.Id == newDev.Id);
+                if (existing != null)
+                {
+                    existing.Name = newDev.Name;
+                    existing.IsDefault = newDev.IsDefault;
+                    existing.IsDefaultComms = newDev.IsDefaultComms;
+                    existing.IconPath = newDev.IconPath;
+                    existing.IsFavorite = newDev.IsFavorite;
+                    existing.State = newDev.State;
+                    existing.CustomIconGlyph = newDev.CustomIconGlyph;
+                }
+                else
+                {
+                    InputDevices.Add(newDev);
+                }
+            }
+
+            // Sort: favorites first, then by sort mode
+            var sortedList = InputDevices.ToList();
+            var sortMode = _settingsService.Settings.DeviceSortMode;
+            
+            sortedList.Sort((a, b) => 
+            {
+                if (a.IsFavorite != b.IsFavorite) return b.IsFavorite.CompareTo(a.IsFavorite);
+                return sortMode switch
+                {
+                    "DeviceName" => string.Compare(a.DisplaySubName ?? "", b.DisplaySubName ?? "", StringComparison.OrdinalIgnoreCase),
+                    _ => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase)
+                };
+            });
+
+            // Reorder if necessary
+            for (int i = 0; i < sortedList.Count; i++)
+            {
+                var item = sortedList[i];
+                var oldIndex = InputDevices.IndexOf(item);
+                if (oldIndex != i)
+                {
+                   InputDevices.Move(oldIndex, i);
+                }
+            }
+
+            // Set divider visibility
+            bool hasFavorites = InputDevices.Any(d => d.IsFavorite);
+            bool passedFavorites = false;
+            foreach (var device in InputDevices)
+            {
+                if (hasFavorites && !device.IsFavorite && !passedFavorites)
+                {
+                    device.ShowDividerAbove = true;
+                    passedFavorites = true;
+                }
+                else
+                {
+                    device.ShowDividerAbove = false;
+                }
+            }
+            
+            DefaultInputDevice = InputDevices.FirstOrDefault(d => d.IsDefault);
         }
         
         public void ReloadHotkeys()
@@ -301,6 +417,25 @@ namespace AudioSwitcher.UI.ViewModels
                 d.IsDefault = (d.Id == device.Id);
             }
             DefaultDevice = device;
+
+            // Sync communication device if setting enabled
+            if (_settingsService.Settings.SyncCommunicationDevice)
+            {
+                SetDefaultCommunicationDevice(device);
+            }
+        }
+
+        public void SetDefaultInput(AudioDevice device)
+        {
+            if (device == null || !device.IsActive) return;
+            _service.SetDefaultDevice(device.Id);
+            
+            // Update UI state without full reload to preserve scroll position
+            foreach (var d in InputDevices)
+            {
+                d.IsDefault = (d.Id == device.Id);
+            }
+            DefaultInputDevice = device;
 
             // Sync communication device if setting enabled
             if (_settingsService.Settings.SyncCommunicationDevice)

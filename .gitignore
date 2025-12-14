@@ -1,8 +1,64 @@
-.vs
-/log
-AudioSwitcher.UI/obj/*
-AudioSwitcher.UI/bin/*
-AudioSwitcher.Core/obj/*
-AudioSwitcher.Core/bin/*
+# Build outputs
+bin/
+obj/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
 
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
 
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# Logs
+log/
+*.log
+
+# Application settings (user-specific, contains device IDs)
+AudioSwitcher.Core/appsettings.json
+
+# MSIX/AppX packaging
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+*.appxupload
+*.msixupload
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml

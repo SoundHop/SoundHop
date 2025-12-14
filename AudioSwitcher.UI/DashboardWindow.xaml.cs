@@ -75,5 +75,13 @@ namespace AudioSwitcher.UI
         {
             ShellPage.NavigateToSettings();
         }
+
+        /// <summary>
+        /// Navigates to the Hotkeys page within the dashboard.
+        /// </summary>
+        public void NavigateToHotkeys()
+        {
+            ShellPage.NavigateToHotkeys();
+        }
     }
 }

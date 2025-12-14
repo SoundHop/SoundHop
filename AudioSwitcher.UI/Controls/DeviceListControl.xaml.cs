@@ -19,6 +19,14 @@ namespace AudioSwitcher.UI.Controls
             DependencyProperty.Register(nameof(IsCompact), typeof(bool), typeof(DeviceListControl),
                 new PropertyMetadata(false, OnIsCompactChanged));
 
+        public static readonly DependencyProperty IsInputModeProperty =
+            DependencyProperty.Register(nameof(IsInputMode), typeof(bool), typeof(DeviceListControl),
+                new PropertyMetadata(false, OnIsInputModeChanged));
+
+        public static readonly DependencyProperty ShowSortHeaderProperty =
+            DependencyProperty.Register(nameof(ShowSortHeader), typeof(bool), typeof(DeviceListControl),
+                new PropertyMetadata(true, OnShowSortHeaderChanged));
+
         public MainViewModel ViewModel
         {
             get => (MainViewModel)GetValue(ViewModelProperty);
@@ -29,6 +37,24 @@ namespace AudioSwitcher.UI.Controls
         {
             get => (bool)GetValue(IsCompactProperty);
             set => SetValue(IsCompactProperty, value);
+        }
+
+        /// <summary>
+        /// When true, displays input/capture devices. When false (default), displays output/playback devices.
+        /// </summary>
+        public bool IsInputMode
+        {
+            get => (bool)GetValue(IsInputModeProperty);
+            set => SetValue(IsInputModeProperty, value);
+        }
+
+        /// <summary>
+        /// When true (default), shows the sort button header. Set to false to hide it when placing sort button externally.
+        /// </summary>
+        public bool ShowSortHeader
+        {
+            get => (bool)GetValue(ShowSortHeaderProperty);
+            set => SetValue(ShowSortHeaderProperty, value);
         }
 
         public DeviceListControl()
@@ -67,10 +93,17 @@ namespace AudioSwitcher.UI.Controls
                 
                 vm.PropertyChanged += (s, args) =>
                 {
-                    if (args.PropertyName == nameof(MainViewModel.DefaultDevice))
+                    if (args.PropertyName == nameof(MainViewModel.DefaultDevice) ||
+                        args.PropertyName == nameof(MainViewModel.DefaultInputDevice))
                     {
                         control.UpdateSelectedItem();
                     }
+                };
+                
+                // Also subscribe to InputDevices collection changes
+                vm.InputDevices.CollectionChanged += (s, args) => 
+                {
+                    if (control.IsInputMode) control.UpdateDeviceLists();
                 };
             }
         }
@@ -79,8 +112,11 @@ namespace AudioSwitcher.UI.Controls
         {
             if (ViewModel == null) return;
             
-            var favorites = ViewModel.Devices.Where(d => d.IsFavorite).ToList();
-            var nonFavorites = ViewModel.Devices.Where(d => !d.IsFavorite).ToList();
+            // Choose the correct device collection based on mode
+            var devices = IsInputMode ? ViewModel.InputDevices : ViewModel.Devices;
+            
+            var favorites = devices.Where(d => d.IsFavorite).ToList();
+            var nonFavorites = devices.Where(d => !d.IsFavorite).ToList();
             
             FavoritesList.ItemsSource = favorites;
             NonFavoritesList.ItemsSource = nonFavorites;
@@ -105,20 +141,45 @@ namespace AudioSwitcher.UI.Controls
             }
         }
 
+        private static void OnIsInputModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is DeviceListControl control)
+            {
+                control.UpdateDeviceLists();
+                control.UpdateSelectedItem();
+            }
+        }
+
+        private static void OnShowSortHeaderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is DeviceListControl control)
+            {
+                control.SortOptionsButton.Visibility = (bool)e.NewValue ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         private void UpdateSelectedItem()
         {
-            if (ViewModel?.DefaultDevice == null) return;
+            // Get the appropriate default device based on mode
+            var defaultDevice = IsInputMode ? ViewModel?.DefaultInputDevice : ViewModel?.DefaultDevice;
+            
+            if (defaultDevice == null)
+            {
+                FavoritesList.SelectedItem = null;
+                NonFavoritesList.SelectedItem = null;
+                return;
+            }
             
             // Clear selection in both lists, set in the correct one
-            if (ViewModel.DefaultDevice.IsFavorite)
+            if (defaultDevice.IsFavorite)
             {
-                FavoritesList.SelectedItem = ViewModel.DefaultDevice;
+                FavoritesList.SelectedItem = defaultDevice;
                 NonFavoritesList.SelectedItem = null;
             }
             else
             {
                 FavoritesList.SelectedItem = null;
-                NonFavoritesList.SelectedItem = ViewModel.DefaultDevice;
+                NonFavoritesList.SelectedItem = defaultDevice;
             }
         }
 
@@ -129,10 +190,23 @@ namespace AudioSwitcher.UI.Controls
                 // Ignore clicks on disabled or disconnected devices
                 if (!device.IsActive) return;
 
-                if (ViewModel != null && device.Id != ViewModel.DefaultDevice?.Id)
+                if (ViewModel != null)
                 {
-                    ViewModel.SetDefault(device);
-                    UpdateDeviceLists(); // Refresh to update selection across lists
+                    // Compare against appropriate default device based on mode
+                    var currentDefault = IsInputMode ? ViewModel.DefaultInputDevice : ViewModel.DefaultDevice;
+                    if (device.Id != currentDefault?.Id)
+                    {
+                        // Call appropriate method based on mode
+                        if (IsInputMode)
+                        {
+                            ViewModel.SetDefaultInput(device);
+                        }
+                        else
+                        {
+                            ViewModel.SetDefault(device);
+                        }
+                        UpdateDeviceLists(); // Refresh to update selection across lists
+                    }
                 }
             }
         }
@@ -192,7 +266,10 @@ namespace AudioSwitcher.UI.Controls
         {
             if (sender is MenuFlyoutItem item && item.Tag is AudioDevice device && ViewModel != null)
             {
-                var dialog = new AudioSwitcher.UI.Dialogs.HotkeyEditorDialog(ViewModel.Devices, device);
+                var dialog = new AudioSwitcher.UI.Dialogs.HotkeyEditorDialog(
+                    ViewModel.Devices, 
+                    ViewModel.InputDevices, 
+                    device);
                 dialog.XamlRoot = this.XamlRoot;
                 var result = await dialog.ShowAsync();
 

@@ -110,6 +110,29 @@
                                   OnContent="" OffContent=""/>
                 </StackPanel>
             </controls:SettingsCard>
+            
+            <!-- About Section -->
+            <TextBlock Text="About" Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="0,24,0,8"/>
+            
+            <controls:SettingsCard Header="Audio Switcher"
+                                   Description="A modern audio device switcher for Windows">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE946;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <TextBlock x:Name="VersionText" 
+                           Text="Version 1.0.0"
+                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Header="Source code"
+                                   Description="View the project on GitHub">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE8A7;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <HyperlinkButton Content="Open GitHub" NavigateUri="https://github.com/YOUR_USERNAME/AudioSwitcher"/>
+            </controls:SettingsCard>
         </StackPanel>
     </ScrollViewer>
 </Page>

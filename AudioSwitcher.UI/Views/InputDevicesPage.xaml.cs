@@ -4,9 +4,9 @@ using AudioSwitcher.UI.Services;
 
 namespace AudioSwitcher.UI.Views
 {
-    public sealed partial class OutputDevicesPage : Page
+    public sealed partial class InputDevicesPage : Page
     {
-        public OutputDevicesPage()
+        public InputDevicesPage()
         {
             this.InitializeComponent();
             DeviceListControl.ViewModel = MainViewModel.Instance;

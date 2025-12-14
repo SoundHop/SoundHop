@@ -30,7 +30,12 @@
                         ItemInvoked="NavView_ItemInvoked" 
                         Loaded="NavView_Loaded">
             <NavigationView.MenuItems>
-                <NavigationViewItem Tag="OutputDevices" Icon="Audio" Content="Output Devices" />
+                <NavigationViewItem Tag="OutputDevices" Icon="Volume" Content="Output Devices" />
+                <NavigationViewItem Tag="InputDevices" Content="Input Devices">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE720;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Tag="Hotkeys" Icon="Keyboard" Content="Hotkeys" />
             </NavigationView.MenuItems>
             <Frame x:Name="ContentFrame" />

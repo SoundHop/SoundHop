@@ -14,7 +14,7 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid x:Name="RootGrid">
+    <Grid x:Name="RootGrid" Background="Transparent">
         <views:FlyoutPage x:Name="FlyoutPage"/>
     </Grid>
 

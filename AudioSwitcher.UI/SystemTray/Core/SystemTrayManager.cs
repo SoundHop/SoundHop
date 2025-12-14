@@ -29,6 +29,7 @@ namespace AudioSwitcher.UI.SystemTray.Core
         private SystemTrayContextMenuWindow.Item[] menuItems = [];
         public Action? OpenSettingsAction { get; set; }
         public Action? OpenDashboardAction { get; set; }
+        public Action? OpenHotkeysAction { get; set; }
         public record LangPair(string Primary, string Secondary);
 
         private static readonly string[] RtlLanguages =
@@ -182,6 +183,7 @@ namespace AudioSwitcher.UI.SystemTray.Core
             menuItems =
             [
                 new SystemTrayContextMenuWindow.Item("Open dashboard", new Command(OpenDashboard), "\uE80F"),   // Open pane
+                new SystemTrayContextMenuWindow.Item("Manage hotkeys", new Command(OpenHotkeys), "\uE765"),     // Keyboard
                 new SystemTrayContextMenuWindow.Item(texts[0], new Command(OpenSettings), "\uE713"),            // Settings gear
                 new SystemTrayContextMenuWindow.Item("--", null),
                 new SystemTrayContextMenuWindow.Item("Sound control panel", new Command(OpenSoundControlPanel), "\uE7F5"),  // Speaker
@@ -194,6 +196,11 @@ namespace AudioSwitcher.UI.SystemTray.Core
         private void OpenDashboard()
         {
             OpenDashboardAction?.Invoke();
+        }
+
+        private void OpenHotkeys()
+        {
+            OpenHotkeysAction?.Invoke();
         }
 
         private static void OpenSoundControlPanel()

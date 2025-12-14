@@ -78,4 +78,3 @@ namespace AudioSwitcher.UI.Views
         public string GetToggleText(bool isOn) => isOn ? "On" : "Off";
     }
 }
-
