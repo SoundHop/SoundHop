@@ -158,7 +158,7 @@ namespace AudioSwitcher.UI
                 g.Clear(System.Drawing.Color.Transparent);
 
                 // Determine color based on theme
-                var brush = System.Drawing.Brushes.White;
+                var brush = isDarkTheme ? System.Drawing.Brushes.White : System.Drawing.Brushes.Black;
 
                 // Create font - use 30px to fill more of the icon area
                 // "Segoe Fluent Icons" might need to be installed or use fallback
