@@ -67,3 +67,6 @@ Package.StoreAssociation.xml
 TestResults/
 *.cobertura.xml
 coverage.json
+
+# Installer output
+installer-output/
