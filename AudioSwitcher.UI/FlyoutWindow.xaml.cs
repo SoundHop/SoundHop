@@ -195,8 +195,8 @@ namespace AudioSwitcher.UI
             // Re-apply DWM dark mode to prevent white flash after idle
             UpdateTheme(Application.Current.RequestedTheme == ApplicationTheme.Dark);
             
-            // Get taskbar state for positioning
-            _lastTaskbarState = WindowsTaskbar.Current;
+            // Get taskbar state for positioning (uses cursor position for multi-monitor support)
+            _lastTaskbarState = WindowsTaskbar.GetStateFromCursor();
             
             // Position the window
             PositionFlyout(_lastTaskbarState);
