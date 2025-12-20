@@ -62,3 +62,8 @@ AudioSwitcher.Core/appsettings.json
 AppPackages/
 BundleArtifacts/
 Package.StoreAssociation.xml
+
+# Test results and coverage
+TestResults/
+*.cobertura.xml
+coverage.json
