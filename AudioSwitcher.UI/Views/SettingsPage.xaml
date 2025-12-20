@@ -131,7 +131,15 @@
                 <controls:SettingsCard.HeaderIcon>
                     <FontIcon Glyph="&#xE8A7;"/>
                 </controls:SettingsCard.HeaderIcon>
-                <HyperlinkButton Content="Open GitHub" NavigateUri="https://github.com/YOUR_USERNAME/AudioSwitcher"/>
+                <HyperlinkButton Content="Open GitHub" NavigateUri="https://github.com/SoundHop/SoundHop"/>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Header="Privacy Policy"
+                                   Description="Read our privacy policy">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE72E;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <HyperlinkButton Content="View Policy" NavigateUri="https://github.com/SoundHop/SoundHop/blob/main/PRIVACY.md"/>
             </controls:SettingsCard>
         </StackPanel>
     </ScrollViewer>

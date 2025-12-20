@@ -1,8 +1,8 @@
 # SoundHop
 
-**Switch your audio devices with a single click. Modern. Fast. Beautiful.**
+**Switch your audio devices with a single click. Fluent Design-based.**
 
-# ⚠️⚠️⚠️ WARNING THIS APP IS FULLY VIBE CODED! ⚠️⚠️⚠️
+# ⚠️⚠️ WARNING THIS APP IS FULLY VIBE CODED! ⚠️⚠️
 Aside from my guiding hand in UX/UI, this app is fully vibe coded, with most of the features being done in what amounts to about a week of work. I have zero Windows app dev experience (though I do web dev for my day job) and cannot definitively say that this app is production ready. Use at your own risk.
 
 ---
@@ -38,16 +38,11 @@ A huge shoutout to [xenolightning](https://github.com/xenolightning) and the ori
 
 ### Option 1: Download Release
 
-<!-- TODO: Add download link when releases are published -->
-Download the latest release from the [Releases](https://github.com/yourusername/SoundHop/releases) page.
+Download the latest release from the [Releases](https://github.com/SoundHop/SoundHop/releases) page.
 
 ## Contributing
 
-Contributions are welcome! Whether it's bug reports, feature requests, or pull requests, all input is appreciated. Be sure to check out the [Contribution Guidelines]() file for more information.
-
-If you're someone with a lot of experience with Windows app development, and don't mind taking a look at the godforsaken mess of AI code, I'd love for you to join me as a core maintainer in making this app better.
-
-<!-- TODO: Add contribution guidelines (maybe a separate file?) -->
+Contributions are welcome! Whether it's bug reports, feature requests, or pull requests, all input is appreciated. Be sure to check out the [Contribution Guidelines](CONTRIBUTING.md) file for more information.
 
 ## Credits
 
@@ -62,8 +57,3 @@ Was struggling with system tray integration for WinUI 3 for a while until I foun
 ### [EarTrumpet](https://github.com/File-New-Project/EarTrumpet)
 The flyout positioning logic and animation code were adapted from EarTrumpet.
 
----
-
-<p align="center">
-  Made with ❤️ for Windows
-</p>
