@@ -37,6 +37,13 @@ namespace AudioSwitcher.UI
             WindowId wndId = Win32Interop.GetWindowIdFromWindow(_hWnd);
             _appWindow = AppWindow.GetFromWindowId(wndId);
             
+            // Set window icon for taskbar
+            var iconPath = System.IO.Path.Combine(System.AppContext.BaseDirectory, "app_icon.ico");
+            if (System.IO.File.Exists(iconPath))
+            {
+                _appWindow.SetIcon(iconPath);
+            }
+            
             // Hide title bar for cleaner popup look
             if (AppWindowTitleBar.IsCustomizationSupported())
             {

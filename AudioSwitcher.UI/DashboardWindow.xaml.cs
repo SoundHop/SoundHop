@@ -22,6 +22,13 @@ namespace AudioSwitcher.UI
             var wndId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
             var appWindow = AppWindow.GetFromWindowId(wndId);
             
+            // Set window icon for taskbar
+            var iconPath = System.IO.Path.Combine(System.AppContext.BaseDirectory, "app_icon.ico");
+            if (System.IO.File.Exists(iconPath))
+            {
+                appWindow.SetIcon(iconPath);
+            }
+            
             // Extend content into title bar for full Mica effect
             if (AppWindowTitleBar.IsCustomizationSupported())
             {
