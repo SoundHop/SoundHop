@@ -1,0 +1,18 @@
+<Application
+    x:Class="SoundHop.UI.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SoundHop.UI"
+    xmlns:converters="using:SoundHop.UI.Converters">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Converters -->
+            <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+            <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
