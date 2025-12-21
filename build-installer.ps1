@@ -10,8 +10,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$projectPath = "AudioSwitcher.UI\AudioSwitcher.UI.csproj"
-$publishDir = "AudioSwitcher.UI\bin\$Platform\$Configuration\net10.0-windows10.0.19041.0\win-x64\publish"
+$projectPath = "SoundHop.UI\SoundHop.UI.csproj"
+$publishDir = "SoundHop.UI\bin\$Platform\$Configuration\net10.0-windows10.0.19041.0\win-x64\publish"
 $installerScript = "installer.iss"
 $installerOutput = "installer-output"
 

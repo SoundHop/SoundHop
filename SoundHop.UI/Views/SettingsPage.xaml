@@ -1,0 +1,146 @@
+<Page
+    x:Class="SoundHop.UI.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="4">
+            <TextBlock Text="Settings" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,0,0,16"/>
+
+            <!-- Startup Section -->
+            <TextBlock Text="Startup" Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="0,0,0,8"/>
+            
+            <controls:SettingsCard Header="Launch on startup" 
+                                   Description="Start SoundHop when Windows starts">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE7B5;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(RunAtStartupToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="RunAtStartupToggle" Toggled="RunAtStartupToggle_Toggled" 
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Header="Start minimized"
+                                   Description="Start in system tray instead of showing the window">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE712;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(StartMinimizedToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="StartMinimizedToggle" Toggled="StartMinimizedToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+
+            <!-- Device Switching Section -->
+            <TextBlock Text="Device Switching" Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="0,24,0,8"/>
+            
+            <controls:SettingsCard Header="Quick switch mode"
+                                   Description="Middle-click tray icon to cycle through favorite devices">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE8AB;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(QuickSwitchToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="QuickSwitchToggle" Toggled="QuickSwitchToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Header="Sync communication device"
+                                   Description="When changing default device, also change communication device">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE717;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(SyncCommunicationToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="SyncCommunicationToggle" Toggled="SyncCommunicationToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+
+            <!-- Device Display Section -->
+            <TextBlock Text="Device Display" Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="0,24,0,8"/>
+            
+            <controls:SettingsCard Header="Show disabled devices"
+                                   Description="Display devices that have been disabled">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE8D8;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(ShowDisabledToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="ShowDisabledToggle" Toggled="ShowDisabledToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Header="Show disconnected devices"
+                                   Description="Display devices that are currently unplugged">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xF781;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{x:Bind GetToggleText(ShowDisconnectedToggle.IsOn), Mode=OneWay}" 
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <ToggleSwitch x:Name="ShowDisconnectedToggle" Toggled="ShowDisconnectedToggle_Toggled"
+                                  OnContent="" OffContent=""/>
+                </StackPanel>
+            </controls:SettingsCard>
+            
+            <!-- About Section -->
+            <TextBlock Text="About" Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="0,24,0,8"/>
+            
+            <controls:SettingsCard Header="SoundHop"
+                                   Description="A modern audio device switcher for Windows">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE946;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <TextBlock x:Name="VersionText" 
+                           Text="Version 1.0.0"
+                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Header="Source code"
+                                   Description="View the project on GitHub">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE8A7;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <HyperlinkButton Content="Open GitHub" NavigateUri="https://github.com/SoundHop/SoundHop"/>
+            </controls:SettingsCard>
+            
+            <controls:SettingsCard Header="Privacy Policy"
+                                   Description="Read our privacy policy">
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE72E;"/>
+                </controls:SettingsCard.HeaderIcon>
+                <HyperlinkButton Content="View Policy" NavigateUri="https://github.com/SoundHop/SoundHop/blob/main/PRIVACY.md"/>
+            </controls:SettingsCard>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

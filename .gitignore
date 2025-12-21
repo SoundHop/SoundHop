@@ -50,7 +50,7 @@ log/
 *.log
 
 # Application settings (user-specific, contains device IDs)
-AudioSwitcher.Core/appsettings.json
+SoundHop.Core/appsettings.json
 
 # MSIX/AppX packaging
 *.appx

@@ -44,7 +44,7 @@ If you want to implement or fix any existing issues, please leave a comment on t
 3. Build and run:
    ```bash
    dotnet build
-   dotnet run --project AudioSwitcher.UI
+   dotnet run --project SoundHop.UI
    ```
 
 ### Pull Request Process

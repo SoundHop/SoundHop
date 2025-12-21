@@ -43,7 +43,7 @@ Name: "startupicon"; Description: "Start SoundHop when Windows starts"; GroupDes
 
 [Files]
 ; Include all files from the publish output directory
-Source: "AudioSwitcher.UI\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "SoundHop.UI\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 ; Start Menu shortcuts
