@@ -5,7 +5,7 @@
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "SoundHop"
 #define MyAppURL "https://github.com/SoundHop/SoundHop"
-#define MyAppExeName "AudioSwitcher.UI.exe"
+#define MyAppExeName "SoundHop.exe"
 
 [Setup]
 ; NOTE: AppId uniquely identifies this application. Do not use the same AppId in other applications.
