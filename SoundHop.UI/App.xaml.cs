@@ -1,5 +1,8 @@
 using Microsoft.UI.Xaml;
 using SoundHop.UI.Services;
+using System.Threading.Tasks;
+using Velopack;
+using Velopack.Sources;
 
 namespace SoundHop.UI
 {
