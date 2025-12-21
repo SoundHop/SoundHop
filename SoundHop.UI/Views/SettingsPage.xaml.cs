@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using SoundHop.UI.Services;
 using SoundHop.UI.ViewModels;
+using System.Reflection;
 
 namespace SoundHop.UI.Views
 {
@@ -18,6 +19,11 @@ namespace SoundHop.UI.Views
             SyncCommunicationToggle.IsOn = SettingsService.Instance.SyncCommunicationDevice;
             ShowDisabledToggle.IsOn = SettingsService.Instance.ShowDisabledDevices;
             ShowDisconnectedToggle.IsOn = SettingsService.Instance.ShowDisconnectedDevices;
+            AutoCheckUpdatesToggle.IsOn = SettingsService.Instance.AutoCheckUpdates;
+            
+            // Set version from assembly
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            VersionText.Text = $"Version {version?.Major}.{version?.Minor}.{version?.Build}";
         }
 
         private void RunAtStartupToggle_Toggled(object sender, RoutedEventArgs e)
@@ -72,9 +78,18 @@ namespace SoundHop.UI.Views
             }
         }
 
+        private void AutoCheckUpdatesToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch ts)
+            {
+                SettingsService.Instance.AutoCheckUpdates = ts.IsOn;
+            }
+        }
+
         /// <summary>
         /// Returns "On" or "Off" text for toggle state display.
         /// </summary>
         public string GetToggleText(bool isOn) => isOn ? "On" : "Off";
     }
 }
+

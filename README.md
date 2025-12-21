@@ -26,9 +26,9 @@ A huge shoutout to [xenolightning](https://github.com/xenolightning) and the ori
 
 ## System Requirements
 
-- **Windows 10** version 1903 (19H1) or later (**UNTESTED**)
+- **Windows 10** version 1607 or later (**UNTESTED**)
 - **Windows 11** recommended
-- **.NET 10.0** Runtime
+- [**.NET 10.0 Desktop Runtime**](https://dotnet.microsoft.com/download/dotnet/10.0) - required if not already installed
 
 ## Installation
 
