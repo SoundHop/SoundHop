@@ -27,6 +27,9 @@ namespace SoundHop.Core.Services
             public bool QuickSwitchMode { get; set; } = false;
             public bool SyncCommunicationDevice { get; set; } = true;
             
+            // Updates
+            public bool AutoCheckUpdates { get; set; } = true;
+            
             // Device Display
             public bool ShowDisabledDevices { get; set; } = false;
             public bool ShowDisconnectedDevices { get; set; } = false;

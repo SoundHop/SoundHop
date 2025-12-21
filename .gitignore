@@ -70,3 +70,7 @@ coverage.json
 
 # Installer output
 installer-output/
+
+# Velopack output
+publish/
+releases/

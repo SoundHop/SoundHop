@@ -130,6 +130,17 @@ namespace SoundHop.UI.Services
             }
         }
 
+        public bool AutoCheckUpdates
+        {
+            get => _coreSettings.Settings.AutoCheckUpdates;
+            set
+            {
+                _coreSettings.Settings.AutoCheckUpdates = value;
+                _coreSettings.Save();
+                SettingChanged?.Invoke(this, nameof(AutoCheckUpdates));
+            }
+        }
+
         public string DeviceSortMode
         {
             get => _coreSettings.Settings.DeviceSortMode;

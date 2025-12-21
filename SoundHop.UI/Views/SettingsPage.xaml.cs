@@ -18,6 +18,7 @@ namespace SoundHop.UI.Views
             SyncCommunicationToggle.IsOn = SettingsService.Instance.SyncCommunicationDevice;
             ShowDisabledToggle.IsOn = SettingsService.Instance.ShowDisabledDevices;
             ShowDisconnectedToggle.IsOn = SettingsService.Instance.ShowDisconnectedDevices;
+            AutoCheckUpdatesToggle.IsOn = SettingsService.Instance.AutoCheckUpdates;
         }
 
         private void RunAtStartupToggle_Toggled(object sender, RoutedEventArgs e)
@@ -72,9 +73,18 @@ namespace SoundHop.UI.Views
             }
         }
 
+        private void AutoCheckUpdatesToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch ts)
+            {
+                SettingsService.Instance.AutoCheckUpdates = ts.IsOn;
+            }
+        }
+
         /// <summary>
         /// Returns "On" or "Off" text for toggle state display.
         /// </summary>
         public string GetToggleText(bool isOn) => isOn ? "On" : "Off";
     }
 }
+
