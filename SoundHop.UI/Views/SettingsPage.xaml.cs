@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using SoundHop.UI.Services;
 using SoundHop.UI.ViewModels;
+using System.Reflection;
 
 namespace SoundHop.UI.Views
 {
@@ -19,6 +20,10 @@ namespace SoundHop.UI.Views
             ShowDisabledToggle.IsOn = SettingsService.Instance.ShowDisabledDevices;
             ShowDisconnectedToggle.IsOn = SettingsService.Instance.ShowDisconnectedDevices;
             AutoCheckUpdatesToggle.IsOn = SettingsService.Instance.AutoCheckUpdates;
+            
+            // Set version from assembly
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            VersionText.Text = $"Version {version?.Major}.{version?.Minor}.{version?.Build}";
         }
 
         private void RunAtStartupToggle_Toggled(object sender, RoutedEventArgs e)

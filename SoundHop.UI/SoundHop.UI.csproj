@@ -18,6 +18,7 @@
     <ApplicationIcon>..\assets\app_icon.ico</ApplicationIcon>
     <AssemblyName>SoundHop</AssemblyName>
     <Product>SoundHop</Product>
+    <Version>1.0.1</Version>
     <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
 
