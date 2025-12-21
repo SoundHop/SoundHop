@@ -2,7 +2,7 @@
 ![banner](assets/pics/SoundHop_Banner.png)
 **Switch your audio devices with a single click. Fluent Design-based.**
 
-# ⚠️⚠️ WARNING THIS APP IS FULLY VIBE CODED! ⚠️⚠️
+# ⚠️ WARNING THIS APP IS FULLY VIBE CODED! ⚠️
 Aside from my guiding hand in UX/UI, this app is fully vibe coded, with most of the features being done in what amounts to about a week of work. I have zero Windows app dev experience (though I do web dev for my day job) and cannot definitively say that this app is production ready. Use at your own risk.
 
 ---
