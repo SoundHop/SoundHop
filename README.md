@@ -1,5 +1,5 @@
 # SoundHop
-
+![banner](assets/pics/SoundHop_Banner.png)
 **Switch your audio devices with a single click. Fluent Design-based.**
 
 # ⚠️⚠️ WARNING THIS APP IS FULLY VIBE CODED! ⚠️⚠️
@@ -30,15 +30,19 @@ A huge shoutout to [xenolightning](https://github.com/xenolightning) and the ori
 
 ## System Requirements
 
-- **Windows 10** version 1903 (19H1) or later
+- **Windows 10** version 1903 (19H1) or later (**UNTESTED**)
 - **Windows 11** recommended
-- **.NET 8.0** Runtime
+- **.NET 10.0** Runtime
 
 ## Installation
 
-### Option 1: Download Release
+### Download Release
 
-Download the latest release from the [Releases](https://github.com/SoundHop/SoundHop/releases) page.
+Download the latest release from the [Releases](https://github.com/SoundHop/SoundHop/releases) page, and run the installer.
+
+### Setup
+
+After installation, run the app. There should be a icon in the system tray (Show hidden icons), that has the name of your current output device. Click and drag to move the icon to your taskbar for easy access.
 
 ## Contributing
 
