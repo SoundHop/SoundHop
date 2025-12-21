@@ -16,6 +16,8 @@
     <Platforms>x86;x64;arm64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon>..\assets\app_icon.ico</ApplicationIcon>
+    <AssemblyName>SoundHop</AssemblyName>
+    <Product>SoundHop</Product>
   </PropertyGroup>
 
   <ItemGroup>
