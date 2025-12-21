@@ -11,7 +11,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $projectPath = "AudioSwitcher.UI\AudioSwitcher.UI.csproj"
-$publishDir = "AudioSwitcher.UI\bin\$Platform\$Configuration\net8.0-windows10.0.19041.0\win-x64\publish"
+$publishDir = "AudioSwitcher.UI\bin\$Platform\$Configuration\net10.0-windows10.0.19041.0\win-x64\publish"
 $installerScript = "installer.iss"
 $installerOutput = "installer-output"
 
@@ -45,7 +45,8 @@ if (-not $SkipBuild) {
     
     Write-Host "Build completed successfully!" -ForegroundColor Green
     Write-Host ""
-} else {
+}
+else {
     Write-Host "[1/2] Skipping build (using existing publish output)" -ForegroundColor Gray
 }
 
@@ -92,7 +93,8 @@ if (-not $SkipInstaller) {
     
     Write-Host "Installer created successfully!" -ForegroundColor Green
     Write-Host ""
-} else {
+}
+else {
     Write-Host "[2/2] Skipping installer creation" -ForegroundColor Gray
 }
 

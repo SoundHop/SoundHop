@@ -4,7 +4,7 @@
 #define MyAppName "SoundHop"
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "SoundHop"
-#define MyAppURL "https://github.com/yourusername/SoundHop"
+#define MyAppURL "https://github.com/SoundHop/SoundHop"
 #define MyAppExeName "AudioSwitcher.UI.exe"
 
 [Setup]
@@ -43,7 +43,7 @@ Name: "startupicon"; Description: "Start SoundHop when Windows starts"; GroupDes
 
 [Files]
 ; Include all files from the publish output directory
-Source: "AudioSwitcher.UI\bin\x64\Release\net8.0-windows10.0.19041.0\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "AudioSwitcher.UI\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 ; Start Menu shortcuts
