@@ -23,10 +23,6 @@ A huge shoutout to [xenolightning](https://github.com/xenolightning) and the ori
 - 🎤 **Input & Output Support** – Manage both playback and recording devices
 - 🔄 **Quick Switch Mode** – Cycle through favorite devices with middle-click
 - 🎨 **Custom Icons** – Personalize device icons to easily identify them
-- 📍 **Taskbar Integration** – Native system tray flyout that feels like Windows 11
-- 🌙 **Dark Mode** – Full dark theme support with Mica backdrop
-- ⚡ **Launch on Startup** – Start with Windows so it's always ready
-- 🔗 **Sync Communication Device** – Optionally keep your communication device in sync with your default device
 
 ## System Requirements
 
